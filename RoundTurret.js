@@ -28,9 +28,9 @@ function Dome(r, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0])
 	var res = [];
 	for (let p in hAngles) {
 		for (let t in angles) {
-			let roll  = Math.cos(t) * Math.cos(p);
-			let yaw   = Math.sin(t) * Math.cos(p);
-			let pitch = Math.sin(p);
+			let roll  = Math.cos(angles[t]) * Math.cos(hAngles[p]);
+			let yaw   = Math.sin(angles[t]) * Math.cos(hAngles[p]);
+			let pitch = Math.sin(hAngles[p]);
 			let x = r * roll + offsetX;
 			let y = r * yaw + offsetY;
 			let z = hFactor * pitch + offsetZ;
