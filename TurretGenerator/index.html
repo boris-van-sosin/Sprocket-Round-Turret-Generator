@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+
+<script src="RoundTurret.js"></script>
+<!DOCTYPE html>
+<html>
+<title>Sprocket round turret generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body class="w3-content" style="max-width:1300px">
+
+<!-- First Grid: Logo & About -->
+<div class="w3-row">
+  <div class="w3-half w3-black w3-container w3-center" style="height:700px">
+    <div class="w3-padding-64">
+      <h1>Turret parameters</h1>
+    </div>
+    <div class="w3-padding-10" align="left">
+	  <label>Turret diameter</label><br/>
+      <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="20" step="0.01" value="1" oninput="changeValue(this)"/>
+	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="20" step="0.01" value="1"  oninput="changeValue(this)"/><br/>
+	  <p id="turretDiameterDisp" name="turretDiameterDisp">1</p>
+    </div>
+	<div class="w3-padding-10" align="left">
+	  <label>Turret height coefficient</label><br/>
+      <input type="range" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.5" oninput="changeValue(this)"/>
+	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.5"  oninput="changeValue(this)"/><br/>
+	  <p id="turretHeightFactorDisp" name="turretHeightFactorDisp">0.5</p>
+    </div>
+    <div class="w3-padding-10" align="left">
+	  <label>Number of segments (radial)</label><br/>
+      <input type="range" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="12" oninput="changeValue(this)"/>
+	  <input type="number" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="12"  oninput="changeValue(this)"/><br/>
+	  <p id="turretNumSegsDisp" name="turretNumSegsDisp">12</p>
+    </div>
+  </div>
+  <div class="w3-half w3-blue-grey w3-container" style="height:700px">
+    <div class="w3-padding-64 w3-center">
+      <h1>About Me</h1>
+      <img src="/w3images/avatar3.png" class="w3-margin w3-circle" alt="Person" style="width:50%">
+      <div class="w3-left-align w3-padding-large">
+        <p>Lorem ipusm sed vitae justo condimentum, porta lectus vitae, ultricies congue gravida diam non fringilla.</p>
+        <p>Lorem ipusm sed vitae justo condimentum, porta lectus vitae, ultricies congue gravida diam non fringilla.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Footer -->
+<footer class="w3-container w3-black w3-padding-16">
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</footer>
+
+</body>
+</html>
+
+<script>
+function changeValue(elem)
+{
+  var x = elem.value;
+  if (x != "")
+  {
+	document.getElementById(elem.id + "Disp").innerHTML = x;
+  }
+}
+</script>
