@@ -149,7 +149,8 @@ function Generate()
 	console.log(res);
 	let res2 = ConvertToSprocketAll(res, scale);
 	console.log(res);
-	document.getElementById("resText").innerHTML = JSON.stringify(res2);
+	let jsonText = JSON.stringify(res2, null, 2);
+	document.getElementById("resText").innerHTML = jsonText.slice(1, jsonText.length - 1).trim();
 }
 
 function CopyText()
