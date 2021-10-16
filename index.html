@@ -98,7 +98,7 @@
         <textarea id="resText" name="resText" readonly>text</textarea>
       </div>
 	  <div class="w3-padding-10" align="left">
-		<input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div style="display:none" id="copiedNotification">Copied!</div>
+		<input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div style="opacity:0" id="copiedNotification">Copied!</div>
 	  </div>
     </div>
   </div>
@@ -153,18 +153,29 @@ function Generate()
 	document.getElementById("resText").innerHTML = jsonText.slice(1, jsonText.length - 1).trim();
 }
 
+function BlinkElem(elem)
+{
+	var opacity = 1.0;
+	elem.style.opacity = opacity;
+	var fadeEffect =
+		setInterval(
+			function()
+				{
+					opacity -= 0.05;
+					if (opacity < -1e-5)
+					{
+						clearInterval(fadeEffect);
+					}
+					elem.style.opacity = opacity;
+				},
+			50);
+}
+
 function CopyText()
 {
   var txt = document.getElementById("resText").innerHTML;
   navigator.clipboard.writeText(txt);
 
   BlinkElem(document.getElementById("copiedNotification"));
-}
-
-function BlinkElem(elem) {
-   elem.style.display = (elem.style.display == "");
-   setTimeout(function() {
-      elem.style.display = (elem.style.display == "none");
-   }, 10000);
 }
 </script>
