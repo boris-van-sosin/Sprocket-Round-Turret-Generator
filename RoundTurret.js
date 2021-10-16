@@ -28,15 +28,34 @@ function Dome(r, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0])
 	var res = [];
 	for (let p in hAngles) {
 		for (let t in angles) {
-			let roll  = Math.cos(angles[t]) * Math.cos(hAngles[p]);
-			let yaw   = Math.sin(angles[t]) * Math.cos(hAngles[p]);
-			let pitch = Math.sin(hAngles[p]);
-			let x = r * roll + offsetX;
-			let y = r * yaw + offsetY;
-			let z = hFactor * pitch + offsetZ;
-			res.push([[x,y,z],[yaw,pitch,roll]]);
+			let sphereX  = Math.cos(angles[t]) * Math.sin(hAngles[p]);
+			let sphereY   = Math.sin(angles[t]) * Math.sin(hAngles[p]);
+			let sphereZ = Math.cos(hAngles[p]);
+			let x = r * sphereX + offsetX;
+			let y = r * sphereY + offsetY;
+			let z = hFactor * r * sphereZ + offsetZ;
+			res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], hAngles[p]]]);
 		}
 	}
 	
+	return res;
+}
+
+function ConvertToSprocketOne(xyz, eulers, scale = 1.0)
+{
+	let x = xyz[0], y = xyz[1], z = xyz[2];
+	let quaternion = EulerToQuaternion(eulers[0], eulers[1], eulers[2]);
+	let res = { "T":[x, z, y, quaternion[0], quaternion[1], quaternion[2], quaternion[3], scale, 0.0], "REF": "0049b3cd2772cfb43917eb41078e1d01", "CID": 1, "DAT": [] };
+	return res;
+}
+
+function ConvertToSprocketAll(comps, scale = 1.0)
+{
+	var res = [];
+	for (let i in comps)
+	{
+		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], scale);
+		res.push(curr);
+	}
 	return res;
 }

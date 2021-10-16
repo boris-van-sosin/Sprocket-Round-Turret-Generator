@@ -22,25 +22,25 @@
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Turret diameter</label><br/>
-      <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="20" step="0.01" value="1" oninput="changeValue(this)"/>
-	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="20" step="0.01" value="1"  oninput="changeValue(this)"/><br/>
-	  <p id="turretDiameterDisp" name="turretDiameterDisp">1</p>
+      <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="7" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="7"  oninput="ChangeValue(this)"/><br/>
+	  <p id="turretDiameterDisp" name="turretDiameterDisp">7</p>
     </div>
 	<div class="w3-padding-10" align="left">
 	  <label>Turret height coefficient</label><br/>
-      <input type="range" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.5" oninput="changeValue(this)"/>
-	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.5"  oninput="changeValue(this)"/><br/>
-	  <p id="turretHeightFactorDisp" name="turretHeightFactorDisp">0.5</p>
+      <input type="range" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.9" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.9"  oninput="ChangeValue(this)"/><br/>
+	  <p id="turretHeightFactorDisp" name="turretHeightFactorDisp">0.9</p>
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Number of segments (radial)</label><br/>
-      <input type="range" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="12" oninput="changeValue(this)"/>
-	  <input type="number" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="12"  oninput="changeValue(this)"/><br/>
-	  <p id="turretNumSegsDisp" name="turretNumSegsDisp">12</p>
+      <input type="range" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="24" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="24"  oninput="ChangeValue(this)"/><br/>
+	  <p id="turretNumSegsDisp" name="turretNumSegsDisp">24</p>
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Elevation angles (in degrees, comma separated)</label><br/>
-      <input type="text" id="turretHAngles" name="turretHAngles"/>
+      <input type="text" id="turretHAngles" name="turretHAngles" value="10,20,30"/>
 	  <p></p>
     </div>
     <div class="w3-padding-10" align="left">
@@ -48,29 +48,47 @@
 	  <table>
 	  <tr> 
       <td><label>X</label>&nbsp;</td>
-	  <td><input type="range" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0" oninput="changeValue(this)"/>&nbsp;</td>
-	  <td><input type="number" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0"  oninput="changeValue(this)"/>&nbsp;</td>  
+	  <td><input type="range" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
+	  <td><input type="number" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0"  oninput="ChangeValue(this)"/>&nbsp;</td>  
 	  <td><label id="turretOffsetXDisp" name="turretOffsetXDisp">0</label></td>
 	  </tr>
 	  
 	  <tr> 
 	  <td><label>Y</label>&nbsp;</td>
-	  <td><input type="range" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="changeValue(this)"/>&nbsp;</td>
-	  <td><input type="number" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="changeValue(this)"/></td>
+	  <td><input type="range" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
+	  <td><input type="number" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/></td>
 	  <td><label id="turretOffsetYDisp" name="turretOffsetYDisp">0</label></td>
 	  </tr>
 	  
 	  <tr> 
 	  <td><label>Z</label>&nbsp;</td>
-	  <td><input type="range" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="changeValue(this)"/>&nbsp;</td>
-	  <td><input type="number" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="changeValue(this)"/></td>
-	  <td><label id="turretOffsetZDisp" name="turretOffsetZDisp">0</label></td>
+	  <td><input type="range" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="-2.5" oninput="ChangeValue(this)"/>&nbsp;</td>
+	  <td><input type="number" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="-2.5" oninput="ChangeValue(this)"/></td>
+	  <td><label id="turretOffsetZDisp" name="turretOffsetZDisp">-2.5</label></td>
+	  </tr>
+	  </table>
+	  <p></p>
+    </div>
+	<div class="w3-padding-10" align="left">
+	  <label>Panel type</label>
+	  <table>
+	  <tr> 
+      <td><input type="radio" id="OctFlat" name="turretPanelType" value="OctFlat" /><img src="OctFlat.png" style="height:50px" /></td> <!-- 0aa87a90ff5d3f749b15921aadf8ff04 -->
+      <td><input type="radio" id="RectFlat" name="turretPanelType" value="RectFlat" checked /><img src="RectFlat.png" style="height:50px"/></td> <!-- 0049b3cd2772cfb43917eb41078e1d01 -->
+      <td><input type="radio" id="OctRiveted" name="turretPanelType" value="OctRiveted" /><img src="OctRiveted.png" style="height:50px" /></td> <!-- 48123d97e2c457b43bef434381aa025e -->
+      <td><input type="radio" id="RectRiveted" name="turretPanelType" value="RectRiveted" /><img src="RectRiveted.png" style="height:50px" /></td> <!-- f4984d57cd3f77a49877ebdd720c408b -->
 	  </tr>
 	  </table>
 	  <p></p>
     </div>
     <div class="w3-padding-10" align="left">
-      <input type="button" id="generate" name="generate" value="Generate turret!" onclick="generate()"/>
+	  <label>Panel scale</label><br/>
+      <input type="range" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1.5" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1.5"  oninput="ChangeValue(this)"/><br/>
+	  <p id="turretPanelScaleDisp" name="turretPanelScaleDisp">1.5</p>
+    </div>
+    <div class="w3-padding-10" align="left">
+      <input type="button" id="generate" name="generate" value="Generate turret!" onclick="Generate()"/>
     </div>
   </div>
   <div class="w3-half w3-blue-grey w3-container" style="height:900px">
@@ -80,7 +98,7 @@
         <textarea id="resText" name="resText" readonly>text</textarea>
       </div>
 	  <div class="w3-padding-10" align="left">
-		<input type="button" id="copyTxt" name="copyTxt" value="copy text"/>
+		<input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div style="display:none" id="copiedNotification">Copied!</div>
 	  </div>
     </div>
   </div>
@@ -96,7 +114,7 @@
 </html>
 
 <script>
-function changeValue(elem)
+function ChangeValue(elem)
 {
   let x = elem.value;
   if (x != "")
@@ -105,15 +123,16 @@ function changeValue(elem)
   }
 }
 
-function generate()
+function Generate()
 {
 	let diameter = parseFloat(document.getElementById("turretDiameterDisp").innerHTML.trim());
 	let heightFactor = parseFloat(document.getElementById("turretHeightFactorDisp").innerHTML.trim());
 	let numSegs = parseInt(document.getElementById("turretNumSegsDisp").innerHTML.trim());
 	let hAnglesStr = document.getElementById("turretHAngles").value;
-	let offsetX = parseInt(document.getElementById("turretOffsetXDisp").innerHTML.trim());
-	let offsetY = parseInt(document.getElementById("turretOffsetYDisp").innerHTML.trim());
-	let offsetZ = parseInt(document.getElementById("turretOffsetZDisp").innerHTML.trim());
+	let offsetX = parseFloat(document.getElementById("turretOffsetXDisp").innerHTML.trim());
+	let offsetY = parseFloat(document.getElementById("turretOffsetYDisp").innerHTML.trim());
+	let offsetZ = parseFloat(document.getElementById("turretOffsetZDisp").innerHTML.trim());
+	let scale = parseFloat(document.getElementById("turretPanelScaleDisp").innerHTML.trim());
 	
 	var hAngles = [];
 	let hAngleStrsSplit = hAnglesStr.split(",");
@@ -128,6 +147,23 @@ function generate()
 	
 	let res = Dome(diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ]);
 	console.log(res);
-	document.getElementById("resText").innerHTML = JSON.stringify(res);
+	let res2 = ConvertToSprocketAll(res, scale);
+	console.log(res);
+	document.getElementById("resText").innerHTML = JSON.stringify(res2);
+}
+
+function CopyText()
+{
+  var txt = document.getElementById("resText").innerHTML;
+  navigator.clipboard.writeText(txt);
+
+  BlinkElem(document.getElementById("copiedNotification"));
+}
+
+function BlinkElem(elem) {
+   elem.style.display = (elem.style.display == "");
+   setTimeout(function() {
+      elem.style.display = (elem.style.display == "none");
+   }, 10000);
 }
 </script>
