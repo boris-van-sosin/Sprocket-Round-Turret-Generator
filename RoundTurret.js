@@ -27,14 +27,15 @@ function Dome(r, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0])
 	let offsetX = offset[0], offsetY = offset[1], offsetZ = offset[2];
 	var res = [];
 	for (let p in hAngles) {
+		let rFactorAtHeight = Math.sin(hAngles[p]);
 		for (let t in angles) {
-			let sphereX  = Math.cos(angles[t]) * Math.sin(hAngles[p]);
-			let sphereY   = Math.sin(angles[t]) * Math.sin(hAngles[p]);
+			let sphereX = Math.cos(angles[t]) * Math.sin(hAngles[p]);
+			let sphereY = Math.sin(angles[t]) * Math.sin(hAngles[p]);
 			let sphereZ = Math.cos(hAngles[p]);
 			let x = r * sphereX + offsetX;
 			let y = r * sphereY + offsetY;
 			let z = hFactor * r * sphereZ + offsetZ;
-			res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], hAngles[p]]]);
+			res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], hAngles[p]], rFactorAtHeight]);
 		}
 	}
 	
@@ -54,7 +55,7 @@ function ConvertToSprocketAll(comps, scale = 1.0)
 	var res = [];
 	for (let i in comps)
 	{
-		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], scale);
+		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], scale * comps[i][2]);
 		res.push(curr);
 	}
 	return res;
