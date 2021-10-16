@@ -12,6 +12,48 @@
 	  height: 100%; 
 	  box-sizing: border-box;}
 </style>
+
+<style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 360px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+</style>
+
 <body class="w3-content" style="max-width:1300px">
 
 <!-- First Grid: Logo & About -->
@@ -24,24 +66,28 @@
     <div class="w3-padding-10" align="left">
 	  <label>Turret diameter</label><br/>
       <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="7" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="7"  oninput="ChangeValue(this)"/><br/>
+	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="7"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">The diameter of the turret. Imagine the turret as part of a sphere with the diameter equal to this value.</span></div><br/>
 	  <p id="turretDiameterDisp" name="turretDiameterDisp">7</p>
     </div>
 	<div class="w3-padding-10" align="left">
 	  <label>Turret height coefficient</label><br/>
       <input type="range" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.9" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.9"  oninput="ChangeValue(this)"/><br/>
+	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.9"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">The height coefficient of the sphere. Image the sphere is scaled in the vertical axis by this value.</span></div><br/>
 	  <p id="turretHeightFactorDisp" name="turretHeightFactorDisp">0.9</p>
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Number of segments (radial)</label><br/>
       <input type="range" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="24" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="24"  oninput="ChangeValue(this)"/><br/>
+	  <input type="number" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="24"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">How many structural elements to generate for each elevation.</span></div><br/>
 	  <p id="turretNumSegsDisp" name="turretNumSegsDisp">24</p>
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Elevation angles (in degrees, comma separated)</label><br/>
       <input type="text" id="turretHAngles" name="turretHAngles" value="12,17,23,30"/>
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">The list of elevations to sample from the sphere, in degrees.</span></div><br/>
 	  <p></p>
     </div>
     <div class="w3-padding-10" align="left">
@@ -52,6 +98,7 @@
 	  <td><input type="range" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
 	  <td><input type="number" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0"  oninput="ChangeValue(this)"/>&nbsp;</td>  
 	  <td><label id="turretOffsetXDisp" name="turretOffsetXDisp">0</label></td>
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the width axis.</span></div></td>
 	  </tr>
 	  
 	  <tr> 
@@ -59,6 +106,7 @@
 	  <td><input type="range" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
 	  <td><input type="number" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/></td>
 	  <td><label id="turretOffsetYDisp" name="turretOffsetYDisp">0</label></td>
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the length axis.</span></div></td>
 	  </tr>
 	  
 	  <tr> 
@@ -66,6 +114,7 @@
 	  <td><input type="range" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="-2.5" oninput="ChangeValue(this)"/>&nbsp;</td>
 	  <td><input type="number" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="-2.5" oninput="ChangeValue(this)"/></td>
 	  <td><label id="turretOffsetZDisp" name="turretOffsetZDisp">-2.5</label></td>
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the height axis. Note that this is relative to the center of the sphere.</span></div></td>
 	  </tr>
 	  </table>
 	  <p></p>
@@ -78,6 +127,9 @@
       <td><input type="radio" id="RectFlat" name="turretPanelType" value="RectFlat" checked /><img src="RectFlat.png" style="height:50px"/></td> <!-- 0049b3cd2772cfb43917eb41078e1d01 -->
       <td><input type="radio" id="OctRiveted" name="turretPanelType" value="OctRiveted" /><img src="OctRiveted.png" style="height:50px" /></td> <!-- 48123d97e2c457b43bef434381aa025e -->
       <td><input type="radio" id="RectRiveted" name="turretPanelType" value="RectRiveted" /><img src="RectRiveted.png" style="height:50px" /></td> <!-- f4984d57cd3f77a49877ebdd720c408b -->
+      <td><input type="radio" id="SqrExt" name="turretPanelType" value="SqrExt" /><img src="SqrExt.png" style="height:50px" /></td> <!-- 52b5f45e4bc786947943b39249598481 -->
+      <td><input type="radio" id="RectExt" name="turretPanelType" value="RectExt" /><img src="RectExt.png" style="height:50px" /></td> <!-- 704c891f61441e44487824dee12d2ee3 -->
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">The type of structural element to generate. Last two panels have some issues and are NOT RECOMMENDED!</span></div></td>
 	  </tr>
 	  </table>
 	  <p></p>
@@ -85,7 +137,8 @@
     <div class="w3-padding-10" align="left">
 	  <label>Panel scale</label><br/>
       <input type="range" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="3.5" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="3.5"  oninput="ChangeValue(this)"/><br/>
+	  <input type="number" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="3.5"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">A scale to apply to the structural elements. Note that additional scaling is applied to accound for the deformation at differet elevations.</span></div><br/>
 	  <p id="turretPanelScaleDisp" name="turretPanelScaleDisp">3.5</p>
     </div>
     <div class="w3-padding-10" align="left">
@@ -100,7 +153,7 @@
       <textarea id="resText" name="resText" readonly>text</textarea>
     </div>
 	<div class="w3-padding-10" align="left">
-	  <input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div style="opacity:0" id="copiedNotification">Copied!</div>
+	  <input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div class="tooltip">&#x2754;<span class="tooltiptext">Copy this text. Then go to the blueprint file, find an element called "ext", and paste this text <i>into</i> the list. Don't forget to back up your design before manually changing the text files!</span></div><div style="opacity:0" id="copiedNotification">Copied!</div>
 	</div>
   </div>
 </div>
@@ -109,6 +162,7 @@
 <!-- Footer -->
 <footer class="w3-container w3-black w3-padding-16">
   <p>Created by Com. Eng. Dr. Boris van Sosin</p>
+  <p>This tool is provided as-is, and with no guarantees whatsoever. The creator of this tool is not responsible for any damage caused by its use. Always back up your designs before manually changing the text files.</p>
   <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
 </footer>
 
@@ -144,13 +198,49 @@ function Generate()
 			hAngles.push(currAngle * Math.PI / 180);
 		}
 	}	
-	
+		
+	var structElemRef = "0049b3cd2772cfb43917eb41078e1d01";
+	var extendedPanels = false;
+	let panelElems = document.getElementsByName("turretPanelType");
+	for (let p in panelElems)
+	{
+		if (panelElems[p].checked)
+		{
+			console.log(panelElems[p]);
+			switch(panelElems[p].value)
+			{
+			case "OctFlat":
+				structElemRef = "0aa87a90ff5d3f749b15921aadf8ff04";
+				break;
+			case "RectFlat":
+				structElemRef = "0049b3cd2772cfb43917eb41078e1d01";
+				break;
+			case "OctRiveted":
+				structElemRef = "48123d97e2c457b43bef434381aa025e";
+				break;
+			case "RectRiveted":
+				structElemRef = "f4984d57cd3f77a49877ebdd720c408b";
+				break;
+			case "SqrExt":
+				structElemRef = "52b5f45e4bc786947943b39249598481";
+				extendedPanels = true;
+				break;
+			case "RectExt":
+				structElemRef = "704c891f61441e44487824dee12d2ee3";
+				extendedPanels = true;
+				break;
+			}
+			break;
+		}
+	}
+
 	console.log([diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
 	
-	let res = Dome(diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ]);
-	console.log(res);
-	let res2 = ConvertToSprocketAll(res, scale);
-	console.log(res);
+	let res = Dome(diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ], extendedPanels);
+	console.log(res)
+	
+	let res2 = ConvertToSprocketAll(res, scale, structElemRef);
+	console.log(res2);
 	let jsonText = JSON.stringify(res2, null, 2);
 	document.getElementById("resText").innerHTML = jsonText.slice(1, jsonText.length - 1).trim();
 }

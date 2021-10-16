@@ -21,7 +21,7 @@ function DivideInterval(start, end, samples, inclusive = false)
 	return res;
 }
 
-function Dome(r, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0])
+function Dome(r, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0], extendedPanels = false)
 {
 	let angles = DivideInterval(0, Math.PI * 2, numSamples);
 	let offsetX = offset[0], offsetY = offset[1], offsetZ = offset[2];
@@ -35,27 +35,34 @@ function Dome(r, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0])
 			let x = r * sphereX + offsetX;
 			let y = r * sphereY + offsetY;
 			let z = hFactor * r * sphereZ + offsetZ;
-			res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], hAngles[p]], rFactorAtHeight]);
+			if (!extendedPanels)
+			{
+				res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], hAngles[p]], rFactorAtHeight]);
+			}
+			else
+			{
+				res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], Math.PI * 1.5 + hAngles[p]], rFactorAtHeight]);
+			}
 		}
 	}
 	
 	return res;
 }
 
-function ConvertToSprocketOne(xyz, eulers, scale = 1.0)
+function ConvertToSprocketOne(xyz, eulers, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
 {
 	let x = xyz[0], y = xyz[1], z = xyz[2];
 	let quaternion = EulerToQuaternion(eulers[0], eulers[1], eulers[2]);
-	let res = { "T":[x, z, y, quaternion[0], quaternion[1], quaternion[2], quaternion[3], scale, 0.0], "REF": "0049b3cd2772cfb43917eb41078e1d01", "CID": 1, "DAT": [] };
+	let res = { "T":[x, z, y, quaternion[0], quaternion[1], quaternion[2], quaternion[3], scale, 0.0], "REF": structElem, "CID": 1, "DAT": [] };
 	return res;
 }
 
-function ConvertToSprocketAll(comps, scale = 1.0)
+function ConvertToSprocketAll(comps, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
 {
 	var res = [];
 	for (let i in comps)
 	{
-		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], scale * comps[i][2]);
+		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], scale * comps[i][2], structElem);
 		res.push(curr);
 	}
 	return res;
