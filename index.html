@@ -7,52 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<style>
-  textarea {width: 100%;
-	  height: 100%; 
-	  box-sizing: border-box;}
-</style>
-
-<style>
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 360px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-</style>
+<link rel="stylesheet" href="RoundTurretWeb.css">
 
 <body class="w3-content" style="max-width:1300px">
 
@@ -65,30 +20,30 @@
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Turret diameter</label><br/>
-      <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="7" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="7"  oninput="ChangeValue(this)"/>&nbsp;
-	  <div class="tooltip">&#x2754;<span class="tooltiptext">The diameter of the turret. Imagine the turret as part of a sphere with the diameter equal to this value.</span></div><br/>
-	  <p id="turretDiameterDisp" name="turretDiameterDisp">7</p>
+      <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="3.2" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="3.2"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">The diameter of the turret.</span></div>
+	  <div class="valueDiv" id="turretDiameterDisp" name="turretDiameterDisp">3.2</div>
     </div>
 	<div class="w3-padding-10" align="left">
 	  <label>Turret height coefficient</label><br/>
-      <input type="range" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.9" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="0.9"  oninput="ChangeValue(this)"/>&nbsp;
-	  <div class="tooltip">&#x2754;<span class="tooltiptext">The height coefficient of the sphere. Image the sphere is scaled in the vertical axis by this value.</span></div><br/>
-	  <p id="turretHeightFactorDisp" name="turretHeightFactorDisp">0.9</p>
+      <input type="range" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="1.25" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="1.25"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">The height coefficient of the sphere. Image the sphere is scaled in the vertical axis by this value.</span></div>
+	  <div class="valueDiv" id="turretHeightFactorDisp" name="turretHeightFactorDisp">1.25</div>
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Number of segments (radial)</label><br/>
-      <input type="range" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="24" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="24"  oninput="ChangeValue(this)"/>&nbsp;
-	  <div class="tooltip">&#x2754;<span class="tooltiptext">How many structural elements to generate for each elevation.</span></div><br/>
-	  <p id="turretNumSegsDisp" name="turretNumSegsDisp">24</p>
+      <input type="range" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="12" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="12"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">How many structural elements to generate for each elevation.</span></div>
+	  <div class="valueDiv" id="turretNumSegsDisp" name="turretNumSegsDisp">12</div>
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Elevation angles (in degrees, comma separated)</label><br/>
-      <input type="text" id="turretHAngles" name="turretHAngles" value="12,17,23,30"/>
+      <input type="text" id="turretHAngles" name="turretHAngles" value="17,25,35"/>
 	  <div class="tooltip">&#x2754;<span class="tooltiptext">The list of elevations to sample from the sphere, in degrees.</span></div><br/>
-	  <p></p>
+	  <p class="valueDiv" />
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Offset</label>
@@ -111,36 +66,45 @@
 	  
 	  <tr> 
 	  <td><label>Z</label>&nbsp;</td>
-	  <td><input type="range" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="-2.5" oninput="ChangeValue(this)"/>&nbsp;</td>
-	  <td><input type="number" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="-2.5" oninput="ChangeValue(this)"/></td>
-	  <td><label id="turretOffsetZDisp" name="turretOffsetZDisp">-2.5</label></td>
+	  <td><input type="range" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
+	  <td><input type="number" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/></td>
+	  <td><label id="turretOffsetZDisp" name="turretOffsetZDisp">0</label></td>
 	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the height axis. Note that this is relative to the center of the sphere.</span></div></td>
 	  </tr>
 	  </table>
-	  <p></p>
+	  <p class="valueDiv" />
     </div>
 	<div class="w3-padding-10" align="left">
 	  <label>Panel type</label>
 	  <table>
 	  <tr> 
-      <td><input type="radio" id="OctFlat" name="turretPanelType" value="OctFlat" /><img src="OctFlat.png" style="height:50px" /></td> <!-- 0aa87a90ff5d3f749b15921aadf8ff04 -->
-      <td><input type="radio" id="RectFlat" name="turretPanelType" value="RectFlat" checked /><img src="RectFlat.png" style="height:50px"/></td> <!-- 0049b3cd2772cfb43917eb41078e1d01 -->
-      <td><input type="radio" id="OctRiveted" name="turretPanelType" value="OctRiveted" /><img src="OctRiveted.png" style="height:50px" /></td> <!-- 48123d97e2c457b43bef434381aa025e -->
-      <td><input type="radio" id="RectRiveted" name="turretPanelType" value="RectRiveted" /><img src="RectRiveted.png" style="height:50px" /></td> <!-- f4984d57cd3f77a49877ebdd720c408b -->
-      <td><input type="radio" id="SqrExt" name="turretPanelType" value="SqrExt" /><img src="SqrExt.png" style="height:50px" /></td> <!-- 52b5f45e4bc786947943b39249598481 -->
-      <td><input type="radio" id="RectExt" name="turretPanelType" value="RectExt" /><img src="RectExt.png" style="height:50px" /></td> <!-- 704c891f61441e44487824dee12d2ee3 -->
-	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">The type of structural element to generate. Last two panels have some issues and are NOT RECOMMENDED!</span></div></td>
+      <td><label class="container"><input type="radio" id="OctFlat" name="turretPanelType" value="OctFlat" /><span class="checkmark"/></label><img src="OctFlat.png" style="height:50px" /></td> <!-- 0aa87a90ff5d3f749b15921aadf8ff04 -->
+      <td><label class="container"><input type="radio" id="RectFlat" name="turretPanelType" value="RectFlat" checked /><span class="checkmark"/></label><img src="RectFlat.png" style="height:50px"/></td> <!-- 0049b3cd2772cfb43917eb41078e1d01 -->
+      <td><label class="container"><input type="radio" id="OctRiveted" name="turretPanelType" value="OctRiveted" /><span class="checkmark"/></label><img src="OctRiveted.png" style="height:50px" /></td> <!-- 48123d97e2c457b43bef434381aa025e -->
+      <td><label class="container"><input type="radio" id="RectRiveted" name="turretPanelType" value="RectRiveted" /><span class="checkmark"/></label><img src="RectRiveted.png" style="height:50px" /></td> <!-- f4984d57cd3f77a49877ebdd720c408b -->
+      <!-- <td><label class="container"><input type="radio" id="SqrExt" name="turretPanelType" value="SqrExt" /><span class="checkmark"/></label><img src="SqrExt.png" style="height:50px" /></td> --> <!-- 52b5f45e4bc786947943b39249598481 -->
+      <!-- <td><label class="container"><input type="radio" id="RectExt" name="turretPanelType" value="RectExt" /><span class="checkmark"/></label><img src="RectExt.png" style="height:50px" /></td> --> <!-- 704c891f61441e44487824dee12d2ee3 -->
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">The type of structural element to generate.</span></div></td>
 	  </tr>
 	  </table>
-	  <p></p>
+	  <p class="valueDiv" />
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Panel scale</label><br/>
-      <input type="range" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="3.5" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="3.5"  oninput="ChangeValue(this)"/>&nbsp;
-	  <div class="tooltip">&#x2754;<span class="tooltiptext">A scale to apply to the structural elements. Note that additional scaling is applied to accound for the deformation at differet elevations.</span></div><br/>
-	  <p id="turretPanelScaleDisp" name="turretPanelScaleDisp">3.5</p>
+      <input type="range" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1"  oninput="ChangeValue(this)"/>&nbsp;
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">A scale to apply to the structural elements. This is <i>in addition</i> to the automatic scaling, so you probably shouldn't touch this.</span></div><br/>
+	  <div class="valueDiv" id="turretPanelScaleDisp" name="turretPanelScaleDisp">1</div>
     </div>
+	<div class="w3-padding-10" align="left">
+		<label>Remove existing panels?</label>&nbsp;
+		<label class="switch">
+			<input id="stripExistingPanels" name="stripExistingPanels" type="checkbox">
+			<span class="slider round"></span>
+		</label>
+		<div class="tooltip">&#x2754;<span class="tooltiptext">If this is checked, then all existing panels are removed <i>from the turret</i>.<br/>This applies only to uploaded designs.</span></div><br/>
+		<p class="valueDiv"/>
+	</div>
     <div class="w3-padding-10" align="left">
       <input type="button" id="generate" name="generate" value="Generate turret!" onclick="Generate()"/>
     </div>
@@ -153,7 +117,16 @@
       <textarea id="resText" name="resText" readonly>text</textarea>
     </div>
 	<div class="w3-padding-10" align="left">
-	  <input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div class="tooltip">&#x2754;<span class="tooltiptext">Copy this text. Then go to the blueprint file, find an element called "ext", and paste this text <i>into</i> the list. Don't forget to back up your design before manually changing the text files!</span></div><div style="opacity:0" id="copiedNotification">Copied!</div>
+	  <input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div class="tooltip">&#x2754;<span class="tooltiptext">Copy this text.<br/>If you used an existing blueprint, replace the entire file with this.<br/> Otherwise, go to the blueprint file, find an element called "ext", and paste this text <i>into</i> the list.<br/>Don't forget to back up your design before manually changing the text files!</span></div><span style="opacity:0" id="copiedNotification">Copied!</span>
+	  &nbsp;
+	  <input type="button" id="downloadDesign" name="downloadDesign" value="download text file" /><div class="tooltip">&#x2754;<span class="tooltiptext">Download the generated text as a file.</span>
+	</div>
+	<div class="w3-padding-10" align="left">
+	  <input type="button" id="clearTxt" name="clearTxt" value="clear text" onclick="ClearText()"/><div class="tooltip">&#x2754;<span class="tooltiptext">Clear the resulting code text box.</span></div>
+	</div>
+	<div class="w3-padding-10" align="left">
+	  <label>Upload blueprint</label>&nbsp;<input type="file" id="uploadBlueprint" name="uploadBlueprint" /><div class="tooltip">&#x2754;<span class="tooltiptext">Upload an existing blueprint file.</span></div>
+	  <input type="hidden" id="uploadedDesign" name="uploadedDesign" value="0"/>
 	</div>
   </div>
 </div>
@@ -234,13 +207,13 @@ function Generate()
 		}
 	}
 
-	console.log([diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
+	//console.log([diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
 	
 	let res = Dome(diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ], extendedPanels);
-	console.log(res)
+	//console.log(res)
 	
 	let res2 = ConvertToSprocketAll(res, scale, structElemRef);
-	console.log(res2);
+	//console.log(res2);
 	let jsonText = JSON.stringify(res2, null, 2);
 	document.getElementById("resText").innerHTML = jsonText.slice(1, jsonText.length - 1).trim();
 }
@@ -269,5 +242,10 @@ function CopyText()
   navigator.clipboard.writeText(txt);
 
   BlinkElem(document.getElementById("copiedNotification"));
+}
+
+function ClearText()
+{
+	document.getElementById("resText").innerHTML = "";
 }
 </script>
