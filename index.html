@@ -20,18 +20,19 @@
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Turret diameter</label><br/>
-      <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="3.2" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="3.2"  oninput="ChangeValue(this)"/>&nbsp;
+      <input type="range" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="3" oninput="ChangeValue(this)"/>
+	  <input type="number" id="turretDiameter" name="turretDiameter" min="0.01" max="30" step="0.01" value="3"  oninput="ChangeValue(this)"/>&nbsp;
 	  <div class="tooltip">&#x2754;<span class="tooltiptext">The diameter of the turret.</span></div>
-	  <div class="valueDiv" id="turretDiameterDisp" name="turretDiameterDisp">3.2</div>
+	  <div class="valueDiv" id="turretDiameterDisp" name="turretDiameterDisp">3</div>
     </div>
+	<!--
 	<div class="w3-padding-10" align="left">
 	  <label>Turret height coefficient</label><br/>
       <input type="range" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="1.25" oninput="ChangeValue(this)"/>
 	  <input type="number" id="turretHeightFactor" name="turretHeightFactor" min="0.01" max="20" step="0.01" value="1.25"  oninput="ChangeValue(this)"/>&nbsp;
-	  <div class="tooltip">&#x2754;<span class="tooltiptext">The height coefficient of the sphere. Image the sphere is scaled in the vertical axis by this value.</span></div>
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">The height coefficient of the sphere. Imagine the sphere is scaled in the vertical axis by this value.</span></div>
 	  <div class="valueDiv" id="turretHeightFactorDisp" name="turretHeightFactorDisp">1.25</div>
-    </div>
+    </div>-->
     <div class="w3-padding-10" align="left">
 	  <label>Number of segments (radial)</label><br/>
       <input type="range" id="turretNumSegs" name="turretNumSegs" min="1" max="60" step="1" value="12" oninput="ChangeValue(this)"/>
@@ -41,7 +42,7 @@
     </div>
     <div class="w3-padding-10" align="left">
 	  <label>Elevation angles (in degrees, comma separated)</label><br/>
-      <input type="text" id="turretHAngles" name="turretHAngles" value="17,25,35"/>
+      <input type="text" id="turretHAngles" name="turretHAngles" value="35,25,17"/>
 	  <div class="tooltip">&#x2754;<span class="tooltiptext">The list of elevations to sample from the sphere, in degrees.</span></div><br/>
 	  <p class="valueDiv" />
     </div>
@@ -69,7 +70,7 @@
 	  <td><input type="range" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
 	  <td><input type="number" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/></td>
 	  <td><label id="turretOffsetZDisp" name="turretOffsetZDisp">0</label></td>
-	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the height axis. Note that this is relative to the center of the sphere.</span></div></td>
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the height axis. Note that this is relative to the root of the turret.</span></div></td>
 	  </tr>
 	  </table>
 	  <p class="valueDiv" />
@@ -102,7 +103,13 @@
 			<input id="stripExistingPanels" name="stripExistingPanels" type="checkbox">
 			<span class="slider round"></span>
 		</label>
-		<div class="tooltip">&#x2754;<span class="tooltiptext">If this is checked, then all existing panels are removed <i>from the turret</i>.<br/>This applies only to uploaded designs.</span></div><br/>
+		&nbsp;
+		<label>Only of selected type?</label>&nbsp;
+		<label class="switch">
+			<input id="stripPanelsSelectedOnly" name="stripPanelsSelectedOnly" type="checkbox">
+			<span class="slider round"></span>
+		</label>
+		<div class="tooltip">&#x2754;<span class="tooltiptext">If <b>Remove existing panels</b> is enabled, then all existing panels are removed <i>from the turret</i>.<br/>If <b>Only of selected type</b> is enabled, then only panels of the selected type (as above) are removed. Otherwise <b>all</b> panels are removed.<br/>This applies only if there is already data in the resulting code box.</span></div><br/>
 		<p class="valueDiv"/>
 	</div>
     <div class="w3-padding-10" align="left">
@@ -119,13 +126,13 @@
 	<div class="w3-padding-10" align="left">
 	  <input type="button" id="copyTxt" name="copyTxt" value="copy text" onclick="CopyText()"/><div class="tooltip">&#x2754;<span class="tooltiptext">Copy this text.<br/>If you used an existing blueprint, replace the entire file with this.<br/> Otherwise, go to the blueprint file, find an element called "ext", and paste this text <i>into</i> the list.<br/>Don't forget to back up your design before manually changing the text files!</span></div><span style="opacity:0" id="copiedNotification">Copied!</span>
 	  &nbsp;
-	  <input type="button" id="downloadDesign" name="downloadDesign" value="download text file" /><div class="tooltip">&#x2754;<span class="tooltiptext">Download the generated text as a file.</span>
+	  <input type="button" id="downloadDesign" name="downloadDesign" value="download text file" onclick="DownloadStringAsFile(document.getElementById('resText').innerHTML, 'text/json', GenerateModifiedFileName())" /><div class="tooltip">&#x2754;<span class="tooltiptext">Download the generated text as a file.</span>
 	</div>
 	<div class="w3-padding-10" align="left">
 	  <input type="button" id="clearTxt" name="clearTxt" value="clear text" onclick="ClearText()"/><div class="tooltip">&#x2754;<span class="tooltiptext">Clear the resulting code text box.</span></div>
 	</div>
 	<div class="w3-padding-10" align="left">
-	  <label>Upload blueprint</label>&nbsp;<input type="file" id="uploadBlueprint" name="uploadBlueprint" /><div class="tooltip">&#x2754;<span class="tooltiptext">Upload an existing blueprint file.</span></div>
+	  <label>Upload blueprint</label>&nbsp;<input type="file" id="uploadBlueprint" name="uploadBlueprint" oninput="LoadBlueprint()" /><div class="tooltip">&#x2754;<span class="tooltiptext">Upload an existing blueprint file.</span></div>
 	  <input type="hidden" id="uploadedDesign" name="uploadedDesign" value="0"/>
 	</div>
   </div>
@@ -152,16 +159,26 @@ function ChangeValue(elem)
   }
 }
 
+function PanelStringToREF(panel)
+{
+	const mapping = { "OctFlat" : "0aa87a90ff5d3f749b15921aadf8ff04",
+					  "RectFlat" : "0049b3cd2772cfb43917eb41078e1d01",
+					  "OctRiveted" : "48123d97e2c457b43bef434381aa025e",
+					  "RectRiveted" : "f4984d57cd3f77a49877ebdd720c408b" };
+	return mapping[panel];
+}
+
 function Generate()
 {
 	let diameter = parseFloat(document.getElementById("turretDiameterDisp").innerHTML.trim());
-	let heightFactor = parseFloat(document.getElementById("turretHeightFactorDisp").innerHTML.trim());
 	let numSegs = parseInt(document.getElementById("turretNumSegsDisp").innerHTML.trim());
 	let hAnglesStr = document.getElementById("turretHAngles").value;
 	let offsetX = parseFloat(document.getElementById("turretOffsetXDisp").innerHTML.trim());
 	let offsetY = parseFloat(document.getElementById("turretOffsetYDisp").innerHTML.trim());
 	let offsetZ = parseFloat(document.getElementById("turretOffsetZDisp").innerHTML.trim());
 	let scale = parseFloat(document.getElementById("turretPanelScaleDisp").innerHTML.trim());
+	let spripPanels = document.getElementById("stripExistingPanels").checked;
+	let spripOnlySelectedPanel = document.getElementById("stripPanelsSelectedOnly").checked;
 	
 	var hAngles = [];
 	let hAngleStrsSplit = hAnglesStr.split(",");
@@ -180,42 +197,38 @@ function Generate()
 		if (panelElems[p].checked)
 		{
 			console.log(panelElems[p]);
-			switch(panelElems[p].value)
-			{
-			case "OctFlat":
-				structElemRef = "0aa87a90ff5d3f749b15921aadf8ff04";
-				break;
-			case "RectFlat":
-				structElemRef = "0049b3cd2772cfb43917eb41078e1d01";
-				break;
-			case "OctRiveted":
-				structElemRef = "48123d97e2c457b43bef434381aa025e";
-				break;
-			case "RectRiveted":
-				structElemRef = "f4984d57cd3f77a49877ebdd720c408b";
-				break;
-			case "SqrExt":
-				structElemRef = "52b5f45e4bc786947943b39249598481";
-				extendedPanels = true;
-				break;
-			case "RectExt":
-				structElemRef = "704c891f61441e44487824dee12d2ee3";
-				extendedPanels = true;
-				break;
-			}
+			structElemRef = PanelStringToREF(panelElems[p].value);
 			break;
 		}
 	}
-
-	//console.log([diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
 	
-	let res = Dome(diameter / 2, heightFactor, hAngles, numSegs, [offsetX, offsetY, offsetZ], extendedPanels);
+	var currTankData = null;
+	if (spripPanels)
+	{
+		console.log("Will strip existing panles");
+		let panelsToStrip = spripOnlySelectedPanel ? [structElemRef] : [PanelStringToREF("OctFlat"), PanelStringToREF("RectFlat"), PanelStringToREF("OctRiveted"), PanelStringToREF("RectRiveted")];
+		currTankData = StripPanels(document.getElementById("resText").innerHTML, panelsToStrip);
+	}
+	else
+	{
+		currTankData = TankDataAsJSON(document.getElementById("resText").innerHTML);
+	}
+
+	//console.log([diameter / 2, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
+	
+	let res = Dome(diameter / 2, hAngles, numSegs, [offsetX, offsetY, offsetZ], extendedPanels);
 	//console.log(res)
 	
+	let actualData = currTankData[0];
 	let res2 = ConvertToSprocketAll(res, scale, structElemRef);
+	if (currTankData[1])
+	{
+		actualData["ext"] = actualData["ext"].concat(res2);
+	}
+	let res3 = currTankData[1] ? actualData : actualData.concat(res2);
 	//console.log(res2);
-	let jsonText = JSON.stringify(res2, null, 2);
-	document.getElementById("resText").innerHTML = jsonText.slice(1, jsonText.length - 1).trim();
+	let jsonText = JSON.stringify(res3, null, 2);
+	document.getElementById("resText").innerHTML = currTankData[1] ? jsonText : jsonText.slice(1, jsonText.length - 1).trim();
 }
 
 function BlinkElem(elem)
@@ -247,5 +260,56 @@ function CopyText()
 function ClearText()
 {
 	document.getElementById("resText").innerHTML = "";
+	document.getElementById("uploadedDesign").value = 0;
+}
+
+function LoadBlueprint()
+{
+  const content = document.getElementById("resText");
+  const file = document.getElementById("uploadBlueprint").files[0];
+  const uploadedIndicator = document.getElementById("uploadedDesign");
+  const reader = new FileReader();
+
+  reader.addEventListener("load", () => {
+    // this will then display a text file
+    content.innerHTML = reader.result;
+	uploadedIndicator.value = 1;
+	
+  }, false);
+
+  if (file) {
+    reader.readAsText(file);
+  }
+}
+
+function GenerateModifiedFileName()
+{
+	const files = document.getElementById("uploadBlueprint").files;
+	if (files.length > 0)
+	{
+		let fileName = files[0].name;
+		let arr = fileName.split(".");
+		arr[arr.length - 2] = arr[arr.length - 2] + "_withRoundTurret";
+		return arr.join(".");
+	}
+	else
+	{
+		return "_roundTurret.blueprint";
+	}
+}
+
+function DownloadStringAsFile(text, fileType, fileName) {
+	GenerateModifiedFileName();
+	var blob = new Blob([text], { type: fileType });
+	
+	var a = document.createElement('a');
+	a.download = fileName;
+	a.href = URL.createObjectURL(blob);
+	a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
+	a.style.display = "none";
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
 }
 </script>

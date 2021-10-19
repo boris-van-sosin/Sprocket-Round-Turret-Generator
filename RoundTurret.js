@@ -82,58 +82,40 @@ function DivideInterval(start, end, samples, inclusive = false)
 const panelWidth = 0.4; // measured in-game
 const panelHeight = 0.25;
 
-function Dome(rDome, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0], extendedPanels = false)
+function Dome(rDome, hAngles, numSamples, offset = [0.0, 0.0, 0.0], extendedPanels = false)
 {
+	if (hAngles == null || hAngles.length == 0)
+	{
+		return [];
+	}
+	
 	// Sample the angles radially:
 	let angles = DivideInterval(0, Math.PI * 2, numSamples);
 	
-	// Compute the angle at which the radius is largest"
-	var maxRAngle = 0.0;
-	for (let p in hAngles)
-	{
-		if (Math.abs(hAngles[p] - (Math.PI / 2)) < Math.abs(maxRAngle - (Math.PI / 2)))
-		{
-			maxRAngle = hAngles[p];
-		}
-	}
-	
-	// Compute the radius of the sphere required to produce the dome radius:
-	let rFactorAtMaxRHeight = Math.sin(maxRAngle);
-	let r = rDome / rFactorAtMaxRHeight;
-	
-	// Compute Z offset at max dome radius:
-	let globalZOffset = r * hFactor * Math.cos(maxRAngle);
-	//console.log("global Z offset=" + globalZOffset);
-	
-	let offsetX = offset[0], offsetY = offset[1], offsetZ = offset[2] - globalZOffset;
+	let offsetX = offset[0], offsetY = offset[1], offsetZ = offset[2];
 	var res = [];
+	var currH = 0.0;
+	var currR = rDome;
 	for (let p in hAngles)
 	{
-		let rFactorAtHeight = Math.sin(hAngles[p]);
-		let rAtHeight = r * rFactorAtHeight;
-		let requiredSegLen = 2 * Math.sin(Math.PI / numSamples) * rAtHeight;
+		let requiredSegLen = 2 * Math.sin(Math.PI / numSamples) * currR;
 		let scaleAtH = requiredSegLen / panelWidth;
 		//console.log("r=" + r + " rAtHeight=" + rAtHeight +" arcLength=" + (rAtHeight * 2.0 * Math.PI / numSamples) + " requiredSegLen=" + requiredSegLen + " scale=" + scaleAtH);
-		let zOffsetAtHeight = panelHeight * scaleAtH * 0.5 * rFactorAtHeight;
+		let zOffsetAtHeight = panelHeight * scaleAtH * 0.5 * Math.sin(hAngles[p]);
+		let xyOffsetAtHeight = -(panelHeight * scaleAtH) * 0.5 * Math.cos(hAngles[p]);
 		//console.log("z offset=" + zOffsetAtHeight);
 		for (let t in angles)
 		{
-			let sphereX = Math.cos(angles[t]) * Math.sin(hAngles[p]);
-			let sphereY = Math.sin(angles[t]) * Math.sin(hAngles[p]);
-			let sphereZ = Math.cos(hAngles[p]);
+			let sphereX = Math.cos(angles[t]);
+			let sphereY = Math.sin(angles[t]);
 			
-			let xOffsetAtHeight = -(panelHeight * scaleAtH) * 0.5 * Math.cos(angles[t]) * Math.cos(hAngles[p]);;
-			let yOffsetAtHeight = -(panelHeight * scaleAtH) * 0.5 * Math.sin(angles[t]) * Math.cos(hAngles[p]);;
+			let xOffsetAtHeight = xyOffsetAtHeight * Math.cos(angles[t]);
+			let yOffsetAtHeight = xyOffsetAtHeight * Math.sin(angles[t]);
 			//console.log("xy offset=(" + xOffsetAtHeight + "," + yOffsetAtHeight + ") test=" + (xOffsetAtHeight*xOffsetAtHeight+yOffsetAtHeight*yOffsetAtHeight));
 			
-			let x = r * sphereX + offsetX + xOffsetAtHeight;
-			let y = r * sphereY + offsetY + yOffsetAtHeight;
-			let z = hFactor * r * sphereZ + offsetZ + zOffsetAtHeight;
-			
-			//let ptNormal = [sphereX,sphereY,sphereZ];
-			//let rotAxis = Normalized(Cross(ptNormal, [0,0,1]));
-			//let rotAngle = Math.acos(Dot(ptNormal,[0,0,1]) / Math.sqrt(Dot(ptNormal,ptNormal)));
-			//console.log("Axis-angle = " + rotAxis + " " + rotAngle + " Q="+AxisAngleToQuaternion(rotAxis, rotAngle));
+			let x = currR * sphereX + offsetX + xOffsetAtHeight;
+			let y = currR * sphereY + offsetY + yOffsetAtHeight;
+			let z = currH + offsetZ + zOffsetAtHeight;
 			
 			if (!extendedPanels)
 			{
@@ -145,6 +127,8 @@ function Dome(rDome, hFactor, hAngles, numSamples, offset = [0.0, 0.0, 0.0], ext
 				res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], Math.PI * 1.5 + hAngles[p]], scaleAtH]);
 			}
 		}
+		currH += 2 * zOffsetAtHeight;
+		currR += 2 * xyOffsetAtHeight;
 	}
 	
 	return res;
@@ -167,4 +151,56 @@ function ConvertToSprocketAll(comps, scale = 1.0, structElem = "0049b3cd2772cfb4
 		res.push(curr);
 	}
 	return res;
+}
+
+function TankDataAsJSON(txt)
+{
+	// Try to load the JSON data first without and then with []:
+	var jsonData = {};
+	var elemsList = null;
+	var loaded = false;
+	try {
+	  jsonData = JSON.parse(txt);
+	  elemsList = jsonData["ext"];
+	  return [jsonData, true];
+	}
+	catch(err) {
+	}
+	
+	if (!loaded)
+	{
+		try {
+		  jsonData = JSON.parse("[" + txt + "]");
+		  if (jsonData.length > 0 && typeof jsonData[0] != 'object')
+		  {
+			  return [[], false];
+		  }
+		  return [jsonData, false];
+		}
+		catch(err) {
+			return [[], false];
+		}
+	}
+}
+
+function StripPanels(jsonTxt, panelsToStrip)
+{
+	// Try to load the JSON data first without and then with []
+	let parsedData = TankDataAsJSON(jsonTxt);
+	let usedBlueprint = parsedData[1];
+	let jsonData = parsedData[0];
+	let elemsList = usedBlueprint ? jsonData["ext"] : jsonData;
+	
+	console.log("elemsList.length=" + elemsList.length);
+	let newElemsList = elemsList.filter(x => !(x["CID"] == 1 &&  panelsToStrip.includes(x["REF"])));
+	console.log("newElemsList.length=" + newElemsList.length);
+	if (usedBlueprint)
+	{
+		jsonData["ext"] = newElemsList;
+		return [jsonData, true];
+	}
+	else
+	{
+		return [newElemsList, false];
+	}
 }
