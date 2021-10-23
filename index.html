@@ -13,9 +13,10 @@
 
 <!-- First Grid: Logo & About -->
 <div class="w3-row">
-  <div class="w3-half w3-black w3-container w3-center" style="height:1000px">
+  <div class="w3-half w3-black w3-container w3-center" style="height:1100px">
     <div class="w3-padding-10" style="padding-top: 30px;">
-      <h1>Sprocket round turret generator</h1>
+      <h1 style="margin-bottom:2px">Sprocket round turret<sup>*</sup> generator</h1>
+	  <small><sup>*</sup>not only</small>
       <h1>Turret parameters</h1>
     </div>
     <div class="w3-padding-10" align="left">
@@ -43,7 +44,7 @@
     <div class="w3-padding-10" align="left">
 	  <label>Slope angles (in degrees, comma separated)</label><br/>
       <input type="text" id="turretHAngles" name="turretHAngles" value="35,25,17"/>
-	  <div class="tooltip">&#x2754;<span class="tooltiptext">The list of slope angles, arranged from bottom to top, in degrees.</span></div><br/>
+	  <div class="tooltip">&#x2754;<span class="tooltiptext">The list of slope angles, arranged from bottom to top, in degrees.<br/><b>Pro tip:</b> do not use angles over 90 for inverted slopes. Instead, use negative angles. <small>Credit to TurdmanJones for finding this out.</small></span></div><br/>
 	  <p class="valueDiv" />
     </div>
     <div class="w3-padding-10" align="left">
@@ -54,7 +55,7 @@
 	  <td><input type="range" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
 	  <td><input type="number" id="turretOffsetX" name="turretOffsetX" min="-20" max="20" step="0.01" value="0"  oninput="ChangeValue(this)"/>&nbsp;</td>  
 	  <td><label id="turretOffsetXDisp" name="turretOffsetXDisp">0</label></td>
-	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the width axis.</span></div></td>
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the width axis. Note that this is relative to the root of the turret or the hull (see <b>Apply to</b> below).</span></div></td>
 	  </tr>
 	  
 	  <tr> 
@@ -62,7 +63,7 @@
 	  <td><input type="range" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
 	  <td><input type="number" id="turretOffsetY" name="turretOffsetY" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/></td>
 	  <td><label id="turretOffsetYDisp" name="turretOffsetYDisp">0</label></td>
-	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the length axis.</span></div></td>
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the length axis. Note that this is relative to the root of the turret or the hull (see <b>Apply to</b> below).</span></div></td>
 	  </tr>
 	  
 	  <tr> 
@@ -70,7 +71,7 @@
 	  <td><input type="range" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
 	  <td><input type="number" id="turretOffsetZ" name="turretOffsetZ" min="-20" max="20" step="0.01" value="0" oninput="ChangeValue(this)"/></td>
 	  <td><label id="turretOffsetZDisp" name="turretOffsetZDisp">0</label></td>
-	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the height axis. Note that this is relative to the root of the turret.</span></div></td>
+	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">An offset in the height axis. Note that this is relative to the root of the turret or the hull (see <b>Apply to</b> below).</span></div></td>
 	  </tr>
 	  </table>
 	  <p class="valueDiv" />
@@ -90,13 +91,17 @@
 	  </table>
 	  <p class="valueDiv" />
     </div>
-    <div class="w3-padding-10" align="left">
-	  <label>Panel scale</label><br/>
-      <input type="range" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1" oninput="ChangeValue(this)"/>
-	  <input type="number" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1"  oninput="ChangeValue(this)"/>&nbsp;
-	  <div class="tooltip">&#x2754;<span class="tooltiptext">A scale to apply to the structural elements. This is <i>in addition</i> to the automatic scaling, so you probably shouldn't touch this.</span></div><br/>
-	  <div class="valueDiv" id="turretPanelScaleDisp" name="turretPanelScaleDisp">1</div>
-    </div>
+	<div class="w3-padding-10" align="left">
+		<table>
+		<tr>
+		<td>Apply to:</td>
+		<td style="padding-right: 10px"><label class="containerInline"><input type="radio" id="applyToHull" name="applyTo" value="applyToHull" /><span class="checkmarkInline"/></label><label style="padding-left:22px">Hull</label></td>
+		<td><label class="containerInline"><input type="radio" id="applyToTurret" name="applyTo" value="applyToTurret" checked /><span class="checkmarkInline"/></label><label style="padding-left:22px">Turret</label></td>
+		<td><div class="tooltip">&#x2754;<span class="tooltiptext">Apply <i>both removing and adding</i> the panels to the hull or to the turret.</span></div><br/></td>
+		</tr>
+		</table>
+		<p class="valueDiv" />
+	</div>
 	<div class="w3-padding-10" align="left">
 		<label>Remove existing panels?</label>&nbsp;
 		<label class="switch">
@@ -109,14 +114,68 @@
 			<input id="stripPanelsSelectedOnly" name="stripPanelsSelectedOnly" type="checkbox">
 			<span class="slider round"></span>
 		</label>
-		<div class="tooltip">&#x2754;<span class="tooltiptext">If <b>Remove existing panels</b> is enabled, then all existing panels are removed <i>from the turret</i>.<br/>If <b>Only of selected type</b> is enabled, then only panels of the selected type (as above) are removed. Otherwise <b>all</b> panels are removed.<br/>This applies only if there is already data in the resulting code box.</span></div><br/>
+		<div class="tooltip">&#x2754;<span class="tooltiptext">If <b>Remove existing panels</b> is enabled, then all existing panels are removed from the turret or hull (as set by <b>Apply to</b> above).<br/>If <b>Only of selected type</b> is enabled, then only panels of the selected type (as above) are removed. Otherwise <b>all</b> panels are removed.<br/>This applies only if there is already data in the resulting code box.</span></div><br/>
 		<p class="valueDiv"/>
+	</div>
+	<div class="w3-padding-10" align="left">
+		<label>Show advanced options</label>&nbsp;
+		<label class="switch">
+			<input id="showAdvanced" name="showAdvanced" type="checkbox" onchange="ShowAdvanced(document.getElementById('showAdvanced'), document.getElementById('advancedBlock'))">
+			<span class="slider round"></span>
+		</label>
+		<p class="valueDiv"/>
+	</div>
+	<div id="advancedBlock" style="display: none;">
+		<div class="w3-padding-10" align="left">
+			<label>Angle range:</label><br/>
+			<input type="number" id="angleFrom" name="angleFrom" min="-180" max="360" step="0.1" value="0"  oninput="ChangeValue(this)"/>-
+			<input type="number" id="angleTo" name="angleTo" min="-180" max="360" step="0.1" value="360"  oninput="ChangeValue(this)"/>
+			<div class="tooltip">&#x2754;<span class="tooltiptext">The range of angles, in degrees, in which to generate a circular arc of stuctural elements.</span></div>
+			<div><label class="valueDiv" id="angleFromDisp" name="angleFromDisp">0</label>-<label class="valueDiv" id="angleToDisp" name="angleToDisp">360</label></div>
+			<p class="valueDiv" />
+		</div>
+		<div class="w3-padding-10" align="left">
+			<label>Axis</label>
+			<table>
+			<tr> 
+			<td><label>X</label>&nbsp;</td>
+			<td><input type="range" id="axisX" name="axisX" min="-10" max="10" step="0.001" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
+			<td><input type="number" id="axisX" name="axisX" min="-10" max="10" step="0.001" value="0"  oninput="ChangeValue(this)"/>&nbsp;</td>  
+			<td><label id="axisXDisp" name="axisXDisp">0</label></td>
+			<td><div class="tooltip">&#x2754;<span class="tooltiptext">The X coordinate of the axis of the circular arc to generate (no need to normalize).<br/>Note that rotation is applied before global offset.</span></div></td>
+			</tr>
+			
+			<tr> 
+			<td><label>Y</label>&nbsp;</td>
+			<td><input type="range" id="axisY" name="axisY" min="-10" max="10" step="0.001" value="0" oninput="ChangeValue(this)"/>&nbsp;</td>
+			<td><input type="number" id="axisY" name="axisY" min="-10" max="10" step="0.001" value="0" oninput="ChangeValue(this)"/></td>
+			<td><label id="axisYDisp" name="axisYDisp">0</label></td>
+			<td><div class="tooltip">&#x2754;<span class="tooltiptext">The Y coordinate of the axis of the circular arc to generate (no need to normalize).<br/>Note that rotation is applied before global offset.</span></div></td>
+			</tr>
+			
+			<tr> 
+			<td><label>Z</label>&nbsp;</td>
+			<td><input type="range" id="axisZ" name="axisZ" min="-10" max="10" step="0.001" value="1" oninput="ChangeValue(this)"/>&nbsp;</td>
+			<td><input type="number" id="axisZ" name="axisZ" min="-10" max="10" step="0.001" value="1" oninput="ChangeValue(this)"/></td>
+			<td><label id="axisZDisp" name="axisZDisp">1</label></td>
+			<td><div class="tooltip">&#x2754;<span class="tooltiptext">The Z coordinate of the axis of the circular arc to generate (no need to normalize).<br/>Note that rotation is applied before global offset.</span></div></td>
+			</tr>
+			</table>
+			<p class="valueDiv" />
+		</div>
+		<div class="w3-padding-10" align="left">
+			<label>Panel scale</label><br/>
+			<input type="range" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1" oninput="ChangeValue(this)"/>
+			<input type="number" id="turretPanelScale" name="turretPanelScale" min="0.01" max="10" step="0.01" value="1"  oninput="ChangeValue(this)"/>&nbsp;
+			<div class="tooltip">&#x2754;<span class="tooltiptext">A scale to apply to the structural elements. This is <i>in addition</i> to the automatic scaling, so you probably shouldn't touch this.</span></div><br/>
+		<div class="valueDiv" id="turretPanelScaleDisp" name="turretPanelScaleDisp">1</div>
+    </div>
 	</div>
     <div class="w3-padding-10" align="left">
       <input type="button" id="generate" name="generate" value="Generate turret!" onclick="Generate()"/>
     </div>
   </div>
-  <div class="w3-half w3-blue-grey w3-container" style="height:1000px">
+  <div class="w3-half w3-blue-grey w3-container" style="height:1100px">
     <div class="w3-padding-10 w3-center" style="padding-top: 30px;">
       <h1>&nbsp;</h1><h1>Resulting code:</h1>
     </div>
@@ -179,6 +238,12 @@ function Generate()
 	let scale = parseFloat(document.getElementById("turretPanelScaleDisp").innerHTML.trim());
 	let spripPanels = document.getElementById("stripExistingPanels").checked;
 	let spripOnlySelectedPanel = document.getElementById("stripPanelsSelectedOnly").checked;
+	let cid = document.getElementById("applyToTurret").checked ? 1 : 0;
+	let fromAngle = parseFloat(document.getElementById("angleFromDisp").innerHTML.trim());
+	let toAngle = parseFloat(document.getElementById("angleToDisp").innerHTML.trim());
+	let axisX = parseFloat(document.getElementById("axisXDisp").innerHTML.trim());
+	let axisY = parseFloat(document.getElementById("axisYDisp").innerHTML.trim());
+	let axisZ = parseFloat(document.getElementById("axisZDisp").innerHTML.trim());
 	
 	var hAngles = [];
 	let hAngleStrsSplit = hAnglesStr.split(",");
@@ -207,7 +272,7 @@ function Generate()
 	{
 		console.log("Will strip existing panles");
 		let panelsToStrip = spripOnlySelectedPanel ? [structElemRef] : [PanelStringToREF("OctFlat"), PanelStringToREF("RectFlat"), PanelStringToREF("OctRiveted"), PanelStringToREF("RectRiveted")];
-		currTankData = StripPanels(document.getElementById("resText").innerHTML, panelsToStrip);
+		currTankData = StripPanels(document.getElementById("resText").innerHTML, panelsToStrip, cid);
 	}
 	else
 	{
@@ -216,11 +281,11 @@ function Generate()
 
 	//console.log([diameter / 2, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
 	
-	let res = Dome(diameter / 2, hAngles, numSegs, [offsetX, offsetY, offsetZ], extendedPanels);
+	let res = Dome(diameter / 2, hAngles, numSegs, fromAngle * Math.PI/180, toAngle * Math.PI/180, extendedPanels);
 	//console.log(res)
 	
 	let actualData = currTankData[0];
-	let res2 = ConvertToSprocketAll(res, scale, structElemRef);
+	let res2 = ConvertToSprocketAll(res, [offsetX, offsetY, offsetZ], [axisX, axisY, axisZ], cid, scale, structElemRef);
 	if (currTankData[1])
 	{
 		actualData["ext"] = actualData["ext"].concat(res2);
@@ -298,7 +363,8 @@ function GenerateModifiedFileName()
 	}
 }
 
-function DownloadStringAsFile(text, fileType, fileName) {
+function DownloadStringAsFile(text, fileType, fileName)
+{
 	GenerateModifiedFileName();
 	var blob = new Blob([text], { type: fileType });
 	
@@ -312,4 +378,10 @@ function DownloadStringAsFile(text, fileType, fileName) {
 	document.body.removeChild(a);
 	setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
 }
+
+function ShowAdvanced(toggle, block)
+{
+	block.style.display = toggle.checked ? "block" : "none";
+}
+
 </script>

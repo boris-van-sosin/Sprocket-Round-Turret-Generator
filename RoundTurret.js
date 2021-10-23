@@ -16,6 +16,26 @@ function AxisAngleToQuaternion(axis, angle)
 	return [qx, qy, qz, qw];
 }
 
+function QuaternionMult(q1, q2)
+{
+	let qx = q1[0]*q2[3] + q1[1]*q2[2] - q1[2]*q2[1] + q1[3]*q2[0];
+	let qy = -q1[0]*q2[2] + q1[1]*q2[3] + q1[2]*q2[0] + q1[3]*q2[1];
+	let qz = q1[0]*q2[1] - q1[1]*q2[0] + q1[2]*q2[3] + q1[3]*q2[2];
+	let qw = -q1[0]*q2[0] - q1[1]*q2[1] - q1[2]*q2[2] + q1[3]*q2[3];
+	return [qx, qy, qz, qw];
+}
+
+function QuaternionInv(q)
+{
+	let invNorm = 1.0 / (q[0]*q[0] + q[0]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	return [-q[0]*invNorm, -q[1]*invNorm, -q[2]*invNorm, q[3]*invNorm];
+}
+
+function RotateByQuaternion(q, v)
+{
+	return QuaternionMult(q, QuaternionMult([v[0], v[1], v[2], 1], QuaternionInv(q)));
+}
+
 function Cross(va, vb)
 {
 	return [va[1] * vb[2] - va[2] * vb[1], va[2] * vb[0] - va[0] * vb[2], va[0] * vb[1] - va[1] * vb[0]];
@@ -30,6 +50,15 @@ function Normalized(v)
 {
 	let norm = Math.sqrt(Dot(v,v));
 	return [v[0] / norm, v[1] / norm, v[2] / norm];
+}
+
+function AxisAngleFromTo(v1, v2)
+{
+	let v1N = Normalized(v1);
+	let v2N = Normalized(v2);
+	let axis = Cross(v1N, v2N);
+	let angle = Math.acos(Dot(v1N, v2N));
+	return [axis, angle];
 }
 
 function MatMult(Ma, Mb)
@@ -82,7 +111,7 @@ function DivideInterval(start, end, samples, inclusive = false)
 const panelWidth = 0.4; // measured in-game
 const panelHeight = 0.25;
 
-function Dome(rDome, hAngles, numSamples, offset = [0.0, 0.0, 0.0], extendedPanels = false)
+function Dome(rDome, hAngles, numSamples, from = 0, to = 2*Math.PI, extendedPanels = false)
 {
 	if (hAngles == null || hAngles.length == 0)
 	{
@@ -90,9 +119,8 @@ function Dome(rDome, hAngles, numSamples, offset = [0.0, 0.0, 0.0], extendedPane
 	}
 	
 	// Sample the angles radially:
-	let angles = DivideInterval(0, Math.PI * 2, numSamples);
+	let angles = DivideInterval(from, to, numSamples, Math.abs(Math.abs(to-from) - Math.PI*2) > 1e-5);
 	
-	let offsetX = offset[0], offsetY = offset[1], offsetZ = offset[2];
 	var res = [];
 	var currH = 0.0;
 	var currR = rDome;
@@ -113,9 +141,9 @@ function Dome(rDome, hAngles, numSamples, offset = [0.0, 0.0, 0.0], extendedPane
 			let yOffsetAtHeight = xyOffsetAtHeight * Math.sin(angles[t]);
 			//console.log("xy offset=(" + xOffsetAtHeight + "," + yOffsetAtHeight + ") test=" + (xOffsetAtHeight*xOffsetAtHeight+yOffsetAtHeight*yOffsetAtHeight));
 			
-			let x = currR * sphereX + offsetX + xOffsetAtHeight;
-			let y = currR * sphereY + offsetY + yOffsetAtHeight;
-			let z = currH + offsetZ + zOffsetAtHeight;
+			let x = currR * sphereX + xOffsetAtHeight;
+			let y = currR * sphereY + yOffsetAtHeight;
+			let z = currH + zOffsetAtHeight;
 			
 			if (!extendedPanels)
 			{
@@ -134,20 +162,36 @@ function Dome(rDome, hAngles, numSamples, offset = [0.0, 0.0, 0.0], extendedPane
 	return res;
 }
 
-function ConvertToSprocketOne(xyz, eulers, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
+function ConvertToSprocketOne(xyz, eulers, offset = [0, 0, 0], axis = [0, 0, 1], cid = 1, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
 {
-	let x = xyz[0], y = xyz[1], z = xyz[2];
-	let quaternion = EulerToQuaternion(eulers[0], eulers[1], eulers[2]);
-	let res = { "T":[x, z, y, quaternion[0], quaternion[1], quaternion[2], quaternion[3], scale, 0.0], "REF": structElem, "CID": 1, "DAT": [] };
+	// Start flipping y and z here.
+	var axisAngle;
+	//console.log(axis);
+	if (!(Math.abs(axis[0]) < 1e-5 && Math.abs(axis[1]) < 1e-5 && Math.abs(axis[2] + 1) < 1e-5))
+	{
+		axisAngle =  AxisAngleFromTo([0, 1, 0], [axis[0], axis[2], axis[1]]);
+	}
+	else
+	{
+		axisAngle =  [[1, 0, 0], Math.PI];
+	}
+	//console.log(axisAngle);
+	let rotation = AxisAngleToQuaternion(axisAngle[0], axisAngle[1]);
+	let quaternion = QuaternionMult(rotation, EulerToQuaternion(eulers[0], eulers[1], eulers[2]));
+	let xyzRotated = RotateByQuaternion(rotation, [xyz[0], xyz[2], xyz[1]]);
+	//console.log("rotation: " + rotation);
+	//console.log(xyz + " rotated to " + xyzRotated);
+	let x = xyzRotated[0] + offset[0], y = xyzRotated[1] + offset[2], z = xyzRotated[2] + offset[1];
+	let res = { "T":[x, y, z, quaternion[0], quaternion[1], quaternion[2], quaternion[3], scale, 0.0], "REF": structElem, "CID": cid, "DAT": [] };
 	return res;
 }
 
-function ConvertToSprocketAll(comps, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
+function ConvertToSprocketAll(comps, offset = [0, 0, 0], axis = [0, 0, 1], cid = 1, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
 {
 	var res = [];
 	for (let i in comps)
 	{
-		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], scale * comps[i][2], structElem);
+		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], offset, axis, cid, scale * comps[i][2], structElem);
 		res.push(curr);
 	}
 	return res;
@@ -169,7 +213,8 @@ function TankDataAsJSON(txt)
 	
 	if (!loaded)
 	{
-		try {
+		try
+		{
 		  jsonData = JSON.parse("[" + txt + "]");
 		  if (jsonData.length > 0 && typeof jsonData[0] != 'object')
 		  {
@@ -177,13 +222,14 @@ function TankDataAsJSON(txt)
 		  }
 		  return [jsonData, false];
 		}
-		catch(err) {
+		catch(err)
+		{
 			return [[], false];
 		}
 	}
 }
 
-function StripPanels(jsonTxt, panelsToStrip)
+function StripPanels(jsonTxt, panelsToStrip, cid = 1)
 {
 	// Try to load the JSON data first without and then with []
 	let parsedData = TankDataAsJSON(jsonTxt);
@@ -192,7 +238,7 @@ function StripPanels(jsonTxt, panelsToStrip)
 	let elemsList = usedBlueprint ? jsonData["ext"] : jsonData;
 	
 	console.log("elemsList.length=" + elemsList.length);
-	let newElemsList = elemsList.filter(x => !(x["CID"] == 1 &&  panelsToStrip.includes(x["REF"])));
+	let newElemsList = elemsList.filter(x => !(x["CID"] == cid &&  panelsToStrip.includes(x["REF"])));
 	console.log("newElemsList.length=" + newElemsList.length);
 	if (usedBlueprint)
 	{
