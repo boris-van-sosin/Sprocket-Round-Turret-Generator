@@ -245,6 +245,12 @@ function Generate()
 	let axisY = parseFloat(document.getElementById("axisYDisp").innerHTML.trim());
 	let axisZ = parseFloat(document.getElementById("axisZDisp").innerHTML.trim());
 	
+	if (Math.abs(axisX) < 1e-5 && Math.abs(axisY) < 1e-5 && Math.abs(axisZ) < 1e-5)
+	{
+		console.log("The zero vector (0,0,0) is not a valid axis.");
+		return;
+	}
+	
 	var hAngles = [];
 	let hAngleStrsSplit = hAnglesStr.split(",");
 	for (let s in hAngleStrsSplit) {
