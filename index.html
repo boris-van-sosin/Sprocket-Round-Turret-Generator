@@ -84,8 +84,11 @@
       <td><label class="container"><input type="radio" id="RectFlat" name="turretPanelType" value="RectFlat" checked /><span class="checkmark"/></label><img src="RectFlat.png" style="height:50px"/></td> <!-- 0049b3cd2772cfb43917eb41078e1d01 -->
       <td><label class="container"><input type="radio" id="OctRiveted" name="turretPanelType" value="OctRiveted" /><span class="checkmark"/></label><img src="OctRiveted.png" style="height:50px" /></td> <!-- 48123d97e2c457b43bef434381aa025e -->
       <td><label class="container"><input type="radio" id="RectRiveted" name="turretPanelType" value="RectRiveted" /><span class="checkmark"/></label><img src="RectRiveted.png" style="height:50px" /></td> <!-- f4984d57cd3f77a49877ebdd720c408b -->
-      <!-- <td><label class="container"><input type="radio" id="SqrExt" name="turretPanelType" value="SqrExt" /><span class="checkmark"/></label><img src="SqrExt.png" style="height:50px" /></td> --> <!-- 52b5f45e4bc786947943b39249598481 -->
-      <!-- <td><label class="container"><input type="radio" id="RectExt" name="turretPanelType" value="RectExt" /><span class="checkmark"/></label><img src="RectExt.png" style="height:50px" /></td> --> <!-- 704c891f61441e44487824dee12d2ee3 -->
+      <td><label class="container"><input type="radio" id="SqrExt" name="turretPanelType" value="SqrExt" /><span class="checkmark"/></label><img src="SqrExt.png" style="height:50px" /></td> <!-- 52b5f45e4bc786947943b39249598481 -->
+      <td><label class="container"><input type="radio" id="RectExt" name="turretPanelType" value="RectExt" /><span class="checkmark"/></label><img src="RectExt.png" style="height:50px" /></td> <!-- 704c891f61441e44487824dee12d2ee3 -->
+      <td><label class="container"><input type="radio" id="StowageBoxFront" name="turretPanelType" value="StowageBoxFront" /><span class="checkmark"/></label><img src="Stowage.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
+      <td><label class="container"><input type="radio" id="StowageBoxBack" name="turretPanelType" value="StowageBoxBack" /><span class="checkmark"/></label><img src="Stowage.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
+      <td><label class="container"><input type="radio" id="StowageBoxFlipped" name="turretPanelType" value="StowageBoxFlipped" /><span class="checkmark"/></label><img src="Stowage.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
 	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">The type of structural element to generate.</span></div></td>
 	  </tr>
 	  </table>
@@ -218,13 +221,54 @@ function ChangeValue(elem)
   }
 }
 
+const REFMapping = { "OctFlat" : "0aa87a90ff5d3f749b15921aadf8ff04",
+					 "RectFlat" : "0049b3cd2772cfb43917eb41078e1d01",
+					 "OctRiveted" : "48123d97e2c457b43bef434381aa025e",
+					 "RectRiveted" : "f4984d57cd3f77a49877ebdd720c408b",
+					 "RectExt" : "704c891f61441e44487824dee12d2ee3",
+					 "SqrExt" : "52b5f45e4bc786947943b39249598481",
+					 "StowageBoxFront" : "f5f79e1ebd56fd342acce6a48f067f6a",
+					 "StowageBoxBack" : "f5f79e1ebd56fd342acce6a48f067f6a",
+					 "StowageBoxFlipped" : "f5f79e1ebd56fd342acce6a48f067f6a" };
+					 
+const PanelSizeMapping = { "OctFlat" : [0.4,0.25,0.0],
+						   "RectFlat" : [0.4,0.25,0.0],
+						   "OctRiveted" : [0.4,0.25,0.0],
+						   "RectRiveted" : [0.4,0.25,0.0],
+						   "RectExt" : [0.95,0.662,0.57],
+						   "SqrExt" : [0.63,0.662,0.57],
+						   "StowageBoxFront" : [0.96,0.735,0.494],
+						   "StowageBoxBack" : [0.96,0.735,0.0],
+						   "StowageBoxFlipped" : [0.96,0.735,0.0] };
+						   
+const PanelOrientationMapping = { "OctFlat" : 0,
+								  "RectFlat" : 0,
+								  "OctRiveted" : 0,
+								  "RectRiveted" : 0,
+								  "RectExt" : 1,
+								  "SqrExt" : 1,
+								  "StowageBoxFront" : 2,
+								  "StowageBoxBack" : 2,
+								  "StowageBoxFlipped" : 0 };
+
 function PanelStringToREF(panel)
 {
-	const mapping = { "OctFlat" : "0aa87a90ff5d3f749b15921aadf8ff04",
-					  "RectFlat" : "0049b3cd2772cfb43917eb41078e1d01",
-					  "OctRiveted" : "48123d97e2c457b43bef434381aa025e",
-					  "RectRiveted" : "f4984d57cd3f77a49877ebdd720c408b" };
-	return mapping[panel];
+	return REFMapping[panel];
+}
+
+function AllPanelREFs()
+{
+	return Object.values(REFMapping);
+}
+
+function PanelSize(panel)
+{
+	return PanelSizeMapping[panel];
+}
+
+function PanelOrientation(panel)
+{
+	return PanelOrientationMapping[panel];
 }
 
 function Generate()
@@ -261,7 +305,8 @@ function Generate()
 	}	
 		
 	var structElemRef = "0049b3cd2772cfb43917eb41078e1d01";
-	var extendedPanels = false;
+	var panelSz = [0.4,0.25,0];
+	var panelOrient = 0;
 	let panelElems = document.getElementsByName("turretPanelType");
 	for (let p in panelElems)
 	{
@@ -269,6 +314,8 @@ function Generate()
 		{
 			console.log(panelElems[p]);
 			structElemRef = PanelStringToREF(panelElems[p].value);
+			panelSz = PanelSize(panelElems[p].value);
+			panelOrient = PanelOrientation(panelElems[p].value);
 			break;
 		}
 	}
@@ -277,7 +324,7 @@ function Generate()
 	if (spripPanels)
 	{
 		console.log("Will strip existing panles");
-		let panelsToStrip = spripOnlySelectedPanel ? [structElemRef] : [PanelStringToREF("OctFlat"), PanelStringToREF("RectFlat"), PanelStringToREF("OctRiveted"), PanelStringToREF("RectRiveted")];
+		let panelsToStrip = spripOnlySelectedPanel ? [structElemRef] : AllPanelREFs();
 		currTankData = StripPanels(document.getElementById("resText").innerHTML, panelsToStrip, cid);
 	}
 	else
@@ -287,7 +334,7 @@ function Generate()
 
 	//console.log([diameter / 2, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
 	
-	let res = Dome(diameter / 2, hAngles, numSegs, fromAngle * Math.PI/180, toAngle * Math.PI/180, extendedPanels);
+	let res = Dome(diameter / 2, hAngles, numSegs, panelSz, fromAngle * Math.PI/180, toAngle * Math.PI/180, panelOrient);
 	//console.log(res)
 	
 	let actualData = currTankData[0];

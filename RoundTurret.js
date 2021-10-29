@@ -27,7 +27,7 @@ function QuaternionMult(q1, q2)
 
 function QuaternionInv(q)
 {
-	let invNorm = 1.0 / (q[0]*q[0] + q[0]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	let invNorm = 1.0 / (q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
 	return [-q[0]*invNorm, -q[1]*invNorm, -q[2]*invNorm, q[3]*invNorm];
 }
 
@@ -108,15 +108,17 @@ function DivideInterval(start, end, samples, inclusive = false)
 	return res;
 }
 
-const panelWidth = 0.4; // measured in-game
-const panelHeight = 0.25;
+//const panelWidth = 0.4; // measured in-game
+//const panelHeight = 0.25;
 
-function Dome(rDome, hAngles, numSamples, from = 0, to = 2*Math.PI, extendedPanels = false)
+function Dome(rDome, hAngles, numSamples, panelSz, from = 0, to = 2*Math.PI, orientationVariant = 0)
 {
 	if (hAngles == null || hAngles.length == 0)
 	{
 		return [];
 	}
+	
+	let panelWidth = panelSz[0], panelHeight = panelSz[1];
 	
 	// Sample the angles radially:
 	let angles = DivideInterval(from, to, numSamples, Math.abs(Math.abs(to-from) - Math.PI*2) > 1e-5);
@@ -131,6 +133,7 @@ function Dome(rDome, hAngles, numSamples, from = 0, to = 2*Math.PI, extendedPane
 		//console.log("r=" + r + " rAtHeight=" + rAtHeight +" arcLength=" + (rAtHeight * 2.0 * Math.PI / numSamples) + " requiredSegLen=" + requiredSegLen + " scale=" + scaleAtH);
 		let zOffsetAtHeight = panelHeight * scaleAtH * 0.5 * Math.sin(hAngles[p]);
 		let xyOffsetAtHeight = -(panelHeight * scaleAtH) * 0.5 * Math.cos(hAngles[p]);
+		let scaledDepth = panelSz[2] * scaleAtH;
 		//console.log("z offset=" + zOffsetAtHeight);
 		for (let t in angles)
 		{
@@ -145,15 +148,36 @@ function Dome(rDome, hAngles, numSamples, from = 0, to = 2*Math.PI, extendedPane
 			let y = currR * sphereY + yOffsetAtHeight;
 			let z = currH + zOffsetAtHeight;
 			
-			if (!extendedPanels)
+			var q = EulerToQuaternion(0, 0, 0);
+			var rotatedOffsetX = 0, rotatedOffsetY = 0, rotatedOffsetZ = 0;
+			if (orientationVariant == 0 || (![0,1,2].includes(orientationVariant)))
 			{
-				//was: res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], hAngles[p]], scaleAtH]);
-				res.push([[x,y,z],[-hAngles[p], -angles[t], 0], scaleAtH]);
+				q = EulerToQuaternion(-hAngles[p], -angles[t], 0);
 			}
-			else
+			else if (orientationVariant == 1)
 			{
-				res.push([[x,y,z],[0, Math.PI * 0.5 - angles[t], Math.PI * 1.5 + hAngles[p]], scaleAtH]);
+				let q1 = EulerToQuaternion(Math.PI * 0.5 - angles[t], 0, -Math.PI * 0.5);
+				let q2 = EulerToQuaternion(0, 0, hAngles[p] + Math.PI * 0.0);
+				q = QuaternionMult(q1, q2);
+				let rotatedOffset = RotateByQuaternion(q, [0, 0, -scaledDepth]);
+				//console.log([0,0,1], " -> ", RotateByQuaternion(q,[0,0,1]));
+				rotatedOffsetX = rotatedOffset[0];
+				rotatedOffsetY = rotatedOffset[2];
+				rotatedOffsetZ = rotatedOffset[1];
 			}
+			else if (orientationVariant == 2)
+			{
+				let q1 = EulerToQuaternion(0, Math.PI * 0.5 - angles[t], 0);
+				let q2 = EulerToQuaternion(0, 0, Math.PI * 0.5 - hAngles[p]);
+				q = QuaternionMult(q1, q2);
+				let rotatedOffset = RotateByQuaternion(q, [0, 0, -scaledDepth]);
+				//console.log([0,0,-scaledDepth], " -> ", RotateByQuaternion(q,[0,0,-scaledDepth]));
+				rotatedOffsetX = rotatedOffset[0];
+				rotatedOffsetY = rotatedOffset[2];
+				rotatedOffsetZ = rotatedOffset[1];
+			}
+			
+			res.push([[x + rotatedOffsetX, y + rotatedOffsetY, z + rotatedOffsetZ], q, scaleAtH]);
 		}
 		currH += 2 * zOffsetAtHeight;
 		currR += 2 * xyOffsetAtHeight;
@@ -162,7 +186,7 @@ function Dome(rDome, hAngles, numSamples, from = 0, to = 2*Math.PI, extendedPane
 	return res;
 }
 
-function ConvertToSprocketOne(xyz, eulers, offset = [0, 0, 0], axis = [0, 0, 1], cid = 1, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
+function ConvertToSprocketOne(xyz, baseQuaternion, offset = [0, 0, 0], axis = [0, 0, 1], cid = 1, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
 {
 	// Start flipping y and z here.
 	var axisAngle;
@@ -177,7 +201,7 @@ function ConvertToSprocketOne(xyz, eulers, offset = [0, 0, 0], axis = [0, 0, 1],
 	}
 	//console.log(axisAngle);
 	let rotation = AxisAngleToQuaternion(axisAngle[0], axisAngle[1]);
-	let quaternion = QuaternionMult(rotation, EulerToQuaternion(eulers[0], eulers[1], eulers[2]));
+	let quaternion = QuaternionMult(rotation, baseQuaternion);
 	let xyzRotated = RotateByQuaternion(rotation, [xyz[0], xyz[2], xyz[1]]);
 	//console.log("rotation: " + rotation);
 	//console.log(xyz + " rotated to " + xyzRotated);
