@@ -224,9 +224,11 @@ function ConvertToSprocketOne(xyz, baseQuaternion, offset = [0, 0, 0], axis = [0
 function ConvertToSprocketAll(comps, offset = [0, 0, 0], axis = [0, 0, 1], cid = 1, scale = 1.0, structElem = "0049b3cd2772cfb43917eb41078e1d01")
 {
 	var res = [];
+	let noiseMagnitude = 1e-3;
 	for (let i in comps)
 	{
-		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], offset, axis, cid, scale * comps[i][2], structElem);
+		let noise = 1 + (i % 2) * noiseMagnitude;
+		let curr = ConvertToSprocketOne(comps[i][0], comps[i][1], offset, axis, cid, scale * comps[i][2] * noise, structElem);
 		res.push(curr);
 	}
 	return res;
