@@ -130,7 +130,7 @@ function Dome(rDome, hAngles, numSamples, panelSz, from = 0, to = 2*Math.PI, ori
 	{
 		let requiredSegLen = 2 * Math.sin(Math.PI / numSamples) * currR;
 		let scaleAtH = requiredSegLen / panelWidth;
-		//console.log("r=" + r + " rAtHeight=" + rAtHeight +" arcLength=" + (rAtHeight * 2.0 * Math.PI / numSamples) + " requiredSegLen=" + requiredSegLen + " scale=" + scaleAtH);
+		//console.log("r=" + rDome + " currR=" + currR +" arcLength=" + (currR * 2.0 * Math.PI / numSamples) + " requiredSegLen=" + requiredSegLen + " scale=" + scaleAtH);
 		let zOffsetAtHeight = panelHeight * scaleAtH * 0.5 * Math.sin(hAngles[p]);
 		let xyOffsetAtHeight = -(panelHeight * scaleAtH) * 0.5 * Math.cos(hAngles[p]);
 		let scaledDepth = panelSz[2] * scaleAtH;
@@ -150,7 +150,7 @@ function Dome(rDome, hAngles, numSamples, panelSz, from = 0, to = 2*Math.PI, ori
 			
 			var q = EulerToQuaternion(0, 0, 0);
 			var rotatedOffsetX = 0, rotatedOffsetY = 0, rotatedOffsetZ = 0;
-			if (orientationVariant == 0 || (![0,1,2].includes(orientationVariant)))
+			if (orientationVariant == 0 || (![0,1,2,3].includes(orientationVariant)))
 			{
 				q = EulerToQuaternion(-hAngles[p], -angles[t], 0);
 			}
@@ -168,6 +168,17 @@ function Dome(rDome, hAngles, numSamples, panelSz, from = 0, to = 2*Math.PI, ori
 			else if (orientationVariant == 2)
 			{
 				let q1 = EulerToQuaternion(0, Math.PI * 0.5 - angles[t], 0);
+				let q2 = EulerToQuaternion(0, 0, Math.PI * 0.5 - hAngles[p]);
+				q = QuaternionMult(q1, q2);
+				let rotatedOffset = RotateByQuaternion(q, [0, 0, -scaledDepth]);
+				//console.log([0,0,-scaledDepth], " -> ", RotateByQuaternion(q,[0,0,-scaledDepth]));
+				rotatedOffsetX = rotatedOffset[0];
+				rotatedOffsetY = rotatedOffset[2];
+				rotatedOffsetZ = rotatedOffset[1];
+			}
+			else if (orientationVariant == 3)
+			{
+				let q1 = EulerToQuaternion(0, Math.PI * 1.5 - angles[t], 0);
 				let q2 = EulerToQuaternion(0, 0, Math.PI * 0.5 - hAngles[p]);
 				q = QuaternionMult(q1, q2);
 				let rotatedOffset = RotateByQuaternion(q, [0, 0, -scaledDepth]);

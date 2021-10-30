@@ -86,9 +86,9 @@
       <td><label class="container"><input type="radio" id="RectRiveted" name="turretPanelType" value="RectRiveted" /><span class="checkmark"/></label><img src="RectRiveted.png" style="height:50px" /></td> <!-- f4984d57cd3f77a49877ebdd720c408b -->
       <td><label class="container"><input type="radio" id="SqrExt" name="turretPanelType" value="SqrExt" /><span class="checkmark"/></label><img src="SqrExt.png" style="height:50px" /></td> <!-- 52b5f45e4bc786947943b39249598481 -->
       <td><label class="container"><input type="radio" id="RectExt" name="turretPanelType" value="RectExt" /><span class="checkmark"/></label><img src="RectExt.png" style="height:50px" /></td> <!-- 704c891f61441e44487824dee12d2ee3 -->
-      <td><label class="container"><input type="radio" id="StowageBoxFront" name="turretPanelType" value="StowageBoxFront" /><span class="checkmark"/></label><img src="Stowage.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
-      <td><label class="container"><input type="radio" id="StowageBoxBack" name="turretPanelType" value="StowageBoxBack" /><span class="checkmark"/></label><img src="Stowage.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
-      <td><label class="container"><input type="radio" id="StowageBoxFlipped" name="turretPanelType" value="StowageBoxFlipped" /><span class="checkmark"/></label><img src="Stowage.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
+      <td><label class="container"><input type="radio" id="StowageBoxFront" name="turretPanelType" value="StowageBoxFront" /><span class="checkmark"/></label><img src="StowageFront.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
+      <td><label class="container"><input type="radio" id="StowageBoxBack" name="turretPanelType" value="StowageBoxBack" /><span class="checkmark"/></label><img src="StowageBack.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
+      <td><label class="container"><input type="radio" id="StowageBoxFlipped" name="turretPanelType" value="StowageBoxFlipped" /><span class="checkmark"/></label><img src="StowageFlipped.png" style="height:50px" /></td> <!-- f5f79e1ebd56fd342acce6a48f067f6a -->
 	  <td><div class="tooltip">&#x2754;<span class="tooltiptext">The type of structural element to generate.</span></div></td>
 	  </tr>
 	  </table>
@@ -231,15 +231,15 @@ const REFMapping = { "OctFlat" : "0aa87a90ff5d3f749b15921aadf8ff04",
 					 "StowageBoxBack" : "f5f79e1ebd56fd342acce6a48f067f6a",
 					 "StowageBoxFlipped" : "f5f79e1ebd56fd342acce6a48f067f6a" };
 					 
-const PanelSizeMapping = { "OctFlat" : [0.4,0.25,0.0],
-						   "RectFlat" : [0.4,0.25,0.0],
-						   "OctRiveted" : [0.4,0.25,0.0],
-						   "RectRiveted" : [0.4,0.25,0.0],
+const PanelSizeMapping = { "OctFlat" : [0.395,0.27,0.0],
+						   "RectFlat" : [0.395,0.27,0.0],
+						   "OctRiveted" : [0.395,0.27,0.0],
+						   "RectRiveted" : [0.395,0.27,0.0],
 						   "RectExt" : [0.95,0.662,0.57],
 						   "SqrExt" : [0.63,0.662,0.57],
-						   "StowageBoxFront" : [0.96,0.735,0.494],
-						   "StowageBoxBack" : [0.96,0.735,0.0],
-						   "StowageBoxFlipped" : [0.96,0.735,0.0] };
+						   "StowageBoxFront" : [0.96,0.26,0.494],
+						   "StowageBoxBack" : [0.96,0.38,0.0],
+						   "StowageBoxFlipped" : [0.96,0.26,0.0] };
 						   
 const PanelOrientationMapping = { "OctFlat" : 0,
 								  "RectFlat" : 0,
@@ -249,7 +249,7 @@ const PanelOrientationMapping = { "OctFlat" : 0,
 								  "SqrExt" : 1,
 								  "StowageBoxFront" : 2,
 								  "StowageBoxBack" : 2,
-								  "StowageBoxFlipped" : 0 };
+								  "StowageBoxFlipped" : 3 };
 
 function PanelStringToREF(panel)
 {
@@ -333,7 +333,6 @@ function Generate()
 	}
 
 	//console.log([diameter / 2, hAngles, numSegs, [offsetX, offsetY, offsetZ]]);
-	
 	let res = Dome(diameter / 2, hAngles, numSegs, panelSz, fromAngle * Math.PI/180, toAngle * Math.PI/180, panelOrient);
 	//console.log(res)
 	
