@@ -49,7 +49,14 @@ function Dot(va, vb)
 function Normalized(v)
 {
 	let norm = Math.sqrt(Dot(v,v));
-	return [v[0] / norm, v[1] / norm, v[2] / norm];
+	if (norm > 1e-5)
+	{
+		return [v[0] / norm, v[1] / norm, v[2] / norm];
+	}
+	else
+	{
+		return [0, 0, 0];
+	}
 }
 
 function AxisAngleFromTo(v1, v2)
@@ -285,5 +292,72 @@ function StripPanels(jsonTxt, panelsToStrip, cid = 1)
 	else
 	{
 		return [newElemsList, false];
+	}
+}
+
+function GetPoint(points, idx)
+{
+	return [points[idx * 3], points[idx * 3 + 1], points[idx * 3 + 2]];
+}
+
+function RefMinus(points, va, vb)
+{
+	let pt1 = GetPoint(points, va), pt2 = GetPoint(points, vb);
+	return [pt1[0] - pt2[0], pt1[1] - pt2[1], pt1[2] - pt2[2]];
+}
+
+function LineLineIntersect1(ln1Start, ln1End, ln2Start, ln2End)
+{
+	let vec1 = [ln1End[0] - ln1Start[0], ln1End[1] - ln1Start[1], ln1End[2] - ln1Start[2]],
+		vec2 = [ln2End[0] - ln2Start[0], ln2End[1] - ln2Start[1], ln2End[2] - ln2Start[2]];
+	let coNormal = Normalized(Cross(vec1, vec2));
+	if (Math.abs(coNormal[0]) < 1e-5 && Math.abs(coNormal[1]) < 1e-5 && Math.abs(coNormal[2]) < 1e-5)
+	{
+		return null;
+	}
+	let	planeN1 = Normalized(Cross(vec1, coNormal)),
+		planeN2 = Normalized(Cross(vec2, coNormal)),
+		plane1 = [planeN1[0], planeN1[1], planeN1[2], -Dot(planeN1, ln1Start)],
+		plane2 = [planeN2[0], planeN2[1], planeN2[2], -Dot(planeN2, ln2Start)];
+	let dot1 = Dot(planeN2, vec1),
+		t1 = (-plane2[3] - Dot(ln1Start, plane2)) / dot1,
+		dot2 = Dot(planeN1, vec2),
+		t2 = (-plane1[3] - Dot(ln2Start, plane1)) / dot2;
+	let resPt1 = [ln1Start[0] + t1 * vec1[0], ln1Start[1] + t1 * vec1[1], ln1Start[2] + t1 * vec1[2]],
+		resPt2 = [ln2Start[0] + t2 * vec2[0], ln2Start[1] + t2 * vec2[1], ln2Start[2] + t2 * vec2[2]];
+	let ptDistTest = [Math.abs(resPt1[0] - resPt2[0]), Math.abs(resPt1[1] - resPt2[1]), Math.abs(resPt1[2] - resPt2[2])];
+	let eps = 1e-5
+	if (ptDistTest[0] < eps && ptDistTest[2] < eps && ptDistTest[2] < eps)
+	{
+		return [0.5*resPt1[0] + 0.5*resPt2[0], 0.5*resPt1[1] + 0.5*resPt2[1], 0.5*resPt1[2] + 0.5*resPt2[2]];
+	}
+	else
+	{
+		return null;
+	}
+}
+
+function PolygonOffsetInside(points, face, amount)
+{
+	let faceVec1 = RefMinus(points, face[1], face[0]), faceVec2 = RefMinus(points, face[2], face[1]);
+	let faceN = Normalized(Cross(faceVec1, faceVec2));
+	console.log("Face normal: " + faceN);
+	for (let i = 0; i < face.length - 1; ++i)
+	{
+		//console.log(GetPoint(points, face[i]) + " -> " + GetPoint(points, face[i + 1]));
+		let currPt1 = GetPoint(points, face[i]),
+			currPt2 = GetPoint(points, face[i + 1]),
+			currEdgeVec = [currPt2[0] - currPt1[0], currPt2[1] - currPt1[1], currPt2[2] - currPt1[2]],
+			currEdgeBiNormal = Normalized(Cross(faceN, currEdgeVec)),
+			currOffsetPt1 = [currPt1[0] + amount * currEdgeBiNormal[0], currPt1[1] + amount * currEdgeBiNormal[1], currPt1[2] + amount * currEdgeBiNormal[2]],
+			currOffsetPt2 = [currPt2[0] + amount * currEdgeBiNormal[0], currPt2[1] + amount * currEdgeBiNormal[1], currPt2[2] + amount * currEdgeBiNormal[2]];
+		console.log("Edge (" + currPt1 + " -> " + currPt2 + ") offset to (" + currOffsetPt1 + " -> " + currOffsetPt2 + ")");
+		let prevEdge = [face[(i + face.length - 2) % face.length], face[(i + face.length - 1) % face.length]], nextEdge = [face[(i + 1) % face.length], face[(i + 2) % face.length]];
+		console.log("Prev edge: " + prevEdge + " (" + GetPoint(points, prevEdge[0]) + " -> " + GetPoint(points, prevEdge[1]) + ")");
+		console.log("Next edge: " + nextEdge + " (" + GetPoint(points, nextEdge[0]) + " -> " + GetPoint(points, nextEdge[1]) + ")");
+		let inter1 = LineLineIntersect1(currOffsetPt1, currOffsetPt2, GetPoint(points, prevEdge[0]), GetPoint(points, prevEdge[1])),
+			inter2 = LineLineIntersect1(currOffsetPt1, currOffsetPt2, GetPoint(points, nextEdge[0]), GetPoint(points, nextEdge[1]));
+		console.log("Intersection with prev: " + inter1);
+		console.log("Intersection with next: " + inter2);
 	}
 }
